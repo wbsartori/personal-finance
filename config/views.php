@@ -1,7 +1,7 @@
 <?php
 
-require_once 'vendor/autoload.php';
-require_once '../../src/App.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/config/app.php';
 
 /**
  * Illuminate/view
@@ -19,8 +19,8 @@ $container->instance(\Illuminate\Contracts\Foundation\Application::class, $conta
 
 // Configuration
 // Note that you can set several directories where your templates are located
-$pathsToTemplates = [__DIR__ . '/templates'];
-$pathToCompiledTemplates = __DIR__ . '/compiled';
+$pathsToTemplates = [dirname(__DIR__) . '/templates'];
+$pathToCompiledTemplates = dirname(__DIR__) . '/public/compiled';
 
 // Dependencies
 $filesystem = new \Illuminate\Filesystem\Filesystem;
@@ -53,8 +53,5 @@ $container->alias(
     })::getFacadeAccessor()
 );
 
-// Render template with page.blade.php
-echo $viewFactory->make('page', [
-    'title' => 'Title',
-    'text' => 'This is my text!',
-])->render();
+
+return $viewFactory;

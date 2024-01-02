@@ -6,16 +6,23 @@ use Illuminate\Routing\Router;
 /** @var $router Router */
 
 $router->name('home')->get('/', function () {
-    return 'hello world!';
+    echo 'login';
 });
 
-$router->get('bye', function () {
-    return 'goodbye world!';
+$router->group(['namespace' => 'PersonalFinance\Controllers', 'prefix' => 'entries'], function (Router $router) {
+    $router->get('/', ['name' => 'entries.index', 'uses' => 'EntryController@index']);
 });
 
-$router->group(['namespace' => 'App\Controllers', 'prefix' => 'users'], function (Router $router) {
-    $router->get('/', ['name' => 'users.index', 'uses' => 'UsersController@index']);
-    $router->post('/', ['name' => 'users.store', 'uses' => 'UsersController@store']);
+$router->group(['namespace' => 'PersonalFinance\Controllers', 'prefix' => 'outputs'], function (Router $router) {
+    $router->get('/', ['name' => 'outputs.index', 'uses' => 'OutputController@index']);
+});
+
+$router->group(['namespace' => 'PersonalFinance\Controllers', 'prefix' => 'movements'], function (Router $router) {
+    $router->get('/', ['name' => 'movements.index', 'uses' => 'MovementController@index']);
+});
+
+$router->group(['namespace' => 'PersonalFinance\Controllers', 'prefix' => 'persons'], function (Router $router) {
+    $router->get('/', ['name' => 'persons.index', 'uses' => 'PersonController@index']);
 });
 
 // Redirect

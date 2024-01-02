@@ -1,8 +1,13 @@
 <?php
 
-namespace PersonalFinance\Services;
+namespace PersonalFinance\Controllers;
 
-class EntryController
+use PersonalFinance\Core\AbstractController;
+
+class EntryController extends AbstractController
 {
-
+    public function index()
+    {
+        $this->views('entries.index', ['title' => 'EntradasController', 'text' => 'Entradas']);
+    }
 }

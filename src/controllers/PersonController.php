@@ -1,8 +1,13 @@
 <?php
 
-namespace PersonalFinance\Services;
+namespace PersonalFinance\Controllers;
 
-class PersonController
+use PersonalFinance\Core\AbstractController;
+
+class PersonController extends AbstractController
 {
-
+    public function index()
+    {
+        $this->views('persons.index', ['title' => 'PersonController', 'text' => 'Pessoas']);
+    }
 }
