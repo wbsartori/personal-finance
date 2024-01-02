@@ -1,0 +1,25 @@
+CREATE TABLE ENTRADAS
+(
+    ID INTEGER primary key autoincrement,
+    DESCRICAO    VARCHAR(100),
+    TIPO         VARCHAR(100),
+    VALOR        REAL,
+    DATA_ENTRADA DATETIME,
+    PESSOA_ID    INTEGER
+);
+
+CREATE TABLE SAIDAS
+(
+    ID INTEGER primary key autoincrement,
+    DESCRICAO  VARCHAR(100),
+    TIPO       VARCHAR(100),
+    VALOR      REAL,
+    DATA_SAIDA DATETIME,
+    PESSOA_ID  INTEGER
+);
+
+CREATE TABLE PESSOAS
+(
+    ID INTEGER primary key autoincrement,
+    NOME_COMPLETO VARCHAR(255)
+);

@@ -1,0 +1,21 @@
+{
+  "name": "wbsartori/personal-finance",
+  "autoload": {
+    "psr-4": {
+      "PersonalFinance\\": "src",
+      "PersonalFinance\\database\\": "src/database",
+      "PersonalFinance\\Entities\\": "src/entities",
+      "PersonalFinance\\Services\\": "src/services"
+    }
+  },
+  "authors": [
+    {
+      "name": "wbsartori",
+      "email": "wbsartori@gmail.com"
+    }
+  ],
+  "require": {
+    "illuminate/events": "^8.0",
+    "illuminate/routing": "^8.0"
+  }
+}
