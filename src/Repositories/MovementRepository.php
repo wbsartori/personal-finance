@@ -1,6 +1,6 @@
 <?php
 
-namespace PersonalFinance\repositories;
+namespace PersonalFinance\Repositories;
 
 class MovementRepository
 {
