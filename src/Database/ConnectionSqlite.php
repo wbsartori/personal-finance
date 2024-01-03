@@ -1,11 +1,11 @@
 <?php
 
-namespace PersonalFinance\database;
+namespace PersonalFinance\Database;
 
 use Exception;
 use PDO;
 
-class Connection
+class ConnectionSqlite
 {
     /**
      * @var PDO
@@ -28,6 +28,7 @@ class Connection
             );
             $this->conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+            return $this->conexao;
         } catch (Exception $exception) {
             echo json_encode(
                 [

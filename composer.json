@@ -2,12 +2,7 @@
   "name": "wbsartori/personal-finance",
   "autoload": {
     "psr-4": {
-      "PersonalFinance\\": "src",
-      "PersonalFinance\\database\\": "src/database",
-      "PersonalFinance\\Entities\\": "src/entities",
-      "PersonalFinance\\Services\\": "src/services",
-      "PersonalFinance\\Controllers\\": "src/controllers",
-      "PersonalFinance\\Core\\": "src/core"
+      "PersonalFinance\\": "src"
     }
   },
   "authors": [
@@ -22,6 +17,8 @@
     "illuminate/container": "^8.0",
     "illuminate/contracts": "^8.0",
     "illuminate/filesystem": "^8.0",
-    "illuminate/view": "^8.0"
+    "illuminate/view": "^8.0",
+    "ext-pdo": "*",
+    "ext-json": "*"
   }
 }
