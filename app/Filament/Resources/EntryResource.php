@@ -21,7 +21,6 @@ class EntryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Entradas';
-    protected static ?string $navigationGroup = 'Contas à receber';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -30,7 +29,7 @@ class EntryResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('description')
                     ->label('Descrição')
-                ->placeholder('Descrição da entrada'),
+                    ->placeholder('Descrição da entrada'),
                 Forms\Components\Select::make('type')
                     ->options([
                         'Bonificações' => 'Bonificações',
@@ -60,7 +59,7 @@ class EntryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('entry_date')
                     ->label('Mês de entrada')
-                    ->dateTime('M')
+                    ->date('d-m-Y', 'America/Sao_Paulo')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('people.full_name')
@@ -68,7 +67,9 @@ class EntryResource extends Resource
                 Tables\Columns\TextColumn::make('description')
                     ->label('O que recebeu?'),
                 Tables\Columns\TextColumn::make('value')
-                    ->label('Quanto recebeu?'),
+                    ->label('Quanto recebeu?')
+                    ->prefix('R$ ')
+                    ->money('BRL'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Data de criação')
                     ->toggleable(isToggledHiddenByDefault: true)

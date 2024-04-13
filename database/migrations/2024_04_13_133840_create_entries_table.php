@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('description');
             $table->string('type');
-            $table->string('value');
+            $table->decimal('value');
             $table->dateTime('entry_date');
             $table->foreignId('people_id')->constrained('people');
             $table->timestamps();

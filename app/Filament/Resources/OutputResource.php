@@ -19,7 +19,6 @@ class OutputResource extends Resource
 {
     protected static ?string $model = Output::class;
     protected static ?string $navigationLabel = 'Saídas';
-    protected static ?string $navigationGroup = 'Contas à pagar';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 2;
 
@@ -69,7 +68,7 @@ class OutputResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('output_date')
                     ->label('Mês de saída')
-                    ->dateTime('M')
+                    ->date('d-m-Y', 'America/Sao_Paulo')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('people.full_name')
