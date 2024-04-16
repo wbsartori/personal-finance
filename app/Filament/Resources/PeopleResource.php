@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PeopleResource\Pages;
-use App\Filament\Resources\PeopleResource\RelationManagers;
 use App\Models\People;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PeopleResource extends Resource
 {
@@ -35,13 +32,21 @@ class PeopleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('full_name')->label('Nome completo')
+                Tables\Columns\TextColumn::make('full_name')->label('Nome completo'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Data de criação')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Data de atualização')
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

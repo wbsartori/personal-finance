@@ -9,11 +9,8 @@ use App\Models\People;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OutputResource extends Resource
 {
@@ -48,8 +45,8 @@ class OutputResource extends Resource
                     ->label('Tipo'),
                 Forms\Components\TextInput::make('value')
                     ->label('Valor')
+                    ->currencyMask('.', ',')
                     ->placeholder('00,00')
-                    ->mask(RawJs::make('$money($input)'))
                     ->prefix('R$'),
                 Forms\Components\DateTimePicker::make('output_date')->label('Data da saída'),
                 Forms\Components\Select::make('people_id')
@@ -72,10 +69,14 @@ class OutputResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('people.full_name')
-                    ->label('Quem pagou?'),
+                    ->label('Quem pagou?')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('description')
-                    ->label('O que pagou?'),
+                    ->label('O que pagou?')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('value')
+                    ->currency()
+                    ->money('BRL', 0, 'pt_BR')
                     ->label('Quanto pagou?'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Data de criação')

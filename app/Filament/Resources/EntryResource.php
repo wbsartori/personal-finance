@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class EntryResource extends Resource
 {
     protected static ?string $model = Entry::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Entradas';
     protected static ?int $navigationSort = 3;
@@ -39,8 +38,8 @@ class EntryResource extends Resource
                     ->label('Tipo'),
                 Forms\Components\TextInput::make('value')
                     ->label('Valor')
+                    ->currencyMask('.', ',')
                     ->placeholder('00,00')
-                    ->mask(RawJs::make('$money($input)'))
                     ->prefix('R$'),
                 Forms\Components\DateTimePicker::make('entry_date')->label('Data da entrada'),
                 Forms\Components\Select::make('people_id')
@@ -68,8 +67,8 @@ class EntryResource extends Resource
                     ->label('O que recebeu?'),
                 Tables\Columns\TextColumn::make('value')
                     ->label('Quanto recebeu?')
-                    ->prefix('R$ ')
-                    ->money('BRL'),
+                    ->currency()
+                    ->money('BRL', 0, 'pt_BR'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Data de criação')
                     ->toggleable(isToggledHiddenByDefault: true)
