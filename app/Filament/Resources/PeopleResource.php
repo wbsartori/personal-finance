@@ -46,7 +46,7 @@ class PeopleResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->label(''),
+                Tables\Actions\EditAction::make()->label('Editar'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
