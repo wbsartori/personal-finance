@@ -30,7 +30,7 @@ class LatestSpending extends BaseWidget
             ->headerActions([
                 Action::make('create')
                     ->url('outputs/create')
-                    ->label('Cadastrar novo gasto')
+                    ->label('Novo gasto')
             ])
             ->defaultPaginationPageOption(5)
             ->defaultSort('created_at', 'desc')
