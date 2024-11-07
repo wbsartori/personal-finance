@@ -9,5 +9,4 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateOutput extends CreateRecord
 {
     protected static string $resource = OutputResource::class;
-    protected static bool $canCreateAnother = false;
 }

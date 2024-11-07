@@ -16,12 +16,13 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
+
         $entry = $this->totalEntriesForCurrentMonth();
         $output = $this->totalOutputsForCurrentMonth();
         $total = $entry['value'] - $output['value'];
         $totalIcon = $total >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
         $totalColor = $total >= 0 ? 'success' : 'danger';
-        $currentMonth = Carbon::now()->monthName;
+        $currentMonth = $this->filterDate()['monthName'];
         return [
             Stat::make(
                 'Entradas',
@@ -51,11 +52,8 @@ class StatsOverview extends BaseWidget
 
     public function totalEntriesForCurrentMonth()
     {
-        $startDate = $this->filters['startDate'] ?? null;
-        $endDate = $this->filters['endDate'] ?? null;
-        $entries = Entry::query()
-            ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
+        $entries = Entry::whereYear('entry_date', '=', $this->filterDate()['year'])
+            ->whereMonth('entry_date', '=', $this->filterDate()['month'])
             ->sum('value');
         return [
             'color' => 'success',
@@ -65,15 +63,25 @@ class StatsOverview extends BaseWidget
 
     public function totalOutputsForCurrentMonth()
     {
-        $startDate = $this->filters['startDate'] ?? null;
-        $endDate = $this->filters['endDate'] ?? null;
-        $outputs = Output::query()
-            ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate))
-            ->when($startDate, fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate))
+        $outputs = Output::whereYear('output_date', '=', $this->filterDate()['year'])
+            ->whereMonth('output_date', '=', $this->filterDate()['month'])
             ->sum('value');
         return [
             'color' => 'danger',
             'value' => $outputs,
+        ];
+    }
+
+    public function filterDate(): array
+    {
+        $date = $this->filters['date'] ?? null;
+        $month = Carbon::parse($date)->month;
+        $year = Carbon::parse($date)->year;
+        $monthName = Carbon::parse($date)->monthName;
+        return [
+            'month' => $month,
+            'year' => $year,
+            'monthName' => $monthName
         ];
     }
 }
