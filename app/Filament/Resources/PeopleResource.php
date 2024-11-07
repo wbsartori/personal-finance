@@ -13,7 +13,7 @@ use Filament\Tables\Table;
 class PeopleResource extends Resource
 {
     protected static ?string $model = People::class;
-
+    protected static ?string $navigationGroup = 'Cadastros';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Pessoas';
     protected static ?int $navigationSort = 1;

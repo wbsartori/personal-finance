@@ -18,9 +18,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class EntryResource extends Resource
 {
     protected static ?string $model = Entry::class;
+    protected static ?string $navigationGroup = 'Financeiro';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Entradas';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
