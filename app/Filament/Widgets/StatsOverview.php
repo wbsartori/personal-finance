@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Entry;
 use App\Models\Output;
+use App\Models\People;
 use Carbon\Carbon;
 use Filament\Forms\Components\Builder;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -46,7 +47,39 @@ class StatsOverview extends BaseWidget
                 ->descriptionColor($totalColor)
                 ->color($totalColor)
                 ->chart([1,1,1,1,1]),
+            Stat::make('Salário ' . $this->peopleName(1),
+                'R$ ' . number_format($this->monthSalary(), 2, ',', '.')
+            )
+                ->descriptionIcon($totalIcon)
+                ->description('Saldo mês de ' . $currentMonth)
+                ->descriptionColor($totalColor)
+                ->color($totalColor)
+                ->chart([1,1,1,1,1]),
+            Stat::make('Salário ' . $this->peopleName(2),
+                'R$ ' . number_format($this->monthSalary(2), 2, ',', '.')
+            )
+                ->descriptionIcon($totalIcon)
+                ->description('Saldo mês de ' . $currentMonth)
+                ->descriptionColor($totalColor)
+                ->color($totalColor)
+                ->chart([1,1,1,1,1]),
+
         ];
+    }
+
+    public function peopleName(int $id)
+    {
+        return People::query()->find($id)->full_name;
+    }
+
+    public function monthSalary(int $people = 1): float
+    {
+        return Entry::query()
+            ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('entry_date', '=', $month))
+            ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
+            ->when('salario', fn ($query, $year) => $query->where('type', '=', 'salario'))
+            ->when($people, fn ($query, $year) => $query->where('people_id', '=', $people))
+            ->sum('value');
     }
 
     public function totalEntriesForCurrentMonth()
