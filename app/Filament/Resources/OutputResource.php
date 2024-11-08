@@ -70,6 +70,9 @@ class OutputResource extends Resource
                     ->date('d-m-Y', 'America/Sao_Paulo')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('type')
+                    ->label('Tipo de saída')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('people.full_name')
                     ->label('Quem pagou?')
                     ->searchable(),
