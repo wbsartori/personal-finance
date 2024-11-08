@@ -94,8 +94,7 @@ class StatsOverview extends BaseWidget
         return Entry::query()
             ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('entry_date', '=', $month))
             ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
-            ->when('outros', fn ($query, $year) => $query->where('type', '=', 'salario'))
-            ->when('bonificacoes', fn ($query, $year) => $query->where('type', '=', 'bonificacoes'))
+            ->when('outros', fn ($query, $year) => $query->whereIn('type', ['outros', 'bonificacoes']))
             ->sum('value');
     }
 
