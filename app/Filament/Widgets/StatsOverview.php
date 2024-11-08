@@ -63,7 +63,14 @@ class StatsOverview extends BaseWidget
                 ->descriptionColor('success')
                 ->color('success')
                 ->chart([1,1,1,1,1]),
-
+            Stat::make('Outros valores ',
+                'R$ ' . number_format($this->monthOtherValues(), 2, ',', '.')
+            )
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->description('Salário mês de ' . $currentMonth)
+                ->descriptionColor('success')
+                ->color('success')
+                ->chart([1,1,1,1,1]),
         ];
     }
 
@@ -79,6 +86,16 @@ class StatsOverview extends BaseWidget
             ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
             ->when('salario', fn ($query, $year) => $query->where('type', '=', 'salario'))
             ->when($people, fn ($query, $year) => $query->where('people_id', '=', $people))
+            ->sum('value');
+    }
+
+    public function monthOtherValues(): float
+    {
+        return Entry::query()
+            ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('entry_date', '=', $month))
+            ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
+            ->when('outros', fn ($query, $year) => $query->where('type', '=', 'salario'))
+            ->when('bonificacoes', fn ($query, $year) => $query->where('type', '=', 'bonificacoes'))
             ->sum('value');
     }
 
