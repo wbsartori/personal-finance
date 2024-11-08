@@ -2,20 +2,21 @@
 
 namespace App\Filament\Widgets;
 
-use App\Filament\Resources\EntryResource\Pages\CreateEntry;
 use App\Filament\Resources\OutputResource;
 use App\Models\Output;
+use Carbon\Carbon;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Table;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class LatestSpending extends BaseWidget
 {
 
     use InteractsWithTable;
+    use InteractsWithPageFilters;
     protected static ?int $sort = 4;
     protected int|string|array $columnSpan = 'full';
 
@@ -24,9 +25,13 @@ class LatestSpending extends BaseWidget
 
     public function table(Table $table): Table
     {
+
         return $table
-            ->query(OutputResource::getEloquentQuery())
-            ->heading('Últimos gastos')
+            ->query(OutputResource::getEloquentQuery()
+                ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('output_date', '=', $month))
+                ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('output_date', '=', $year))
+            )
+            ->heading('Gastos do mês de ' . $this->filterDate()['monthName'])
             ->headerActions([
                 Action::make('create')
                     ->url('outputs/create')
@@ -70,5 +75,19 @@ class LatestSpending extends BaseWidget
                     ->icon('heroicon-o-pencil-square')
                     ->label(''),
             ]);
+    }
+
+    public function filterDate(): array
+    {
+        $date = $this->filters['date'] ?? null;
+        Carbon::setLocale('pt_BR');
+        $month = Carbon::parse($date)->month;
+        $year = Carbon::parse($date)->year;
+        $monthName = Carbon::parse($date)->monthName;
+        return [
+            'month' => $month,
+            'year' => $year,
+            'monthName' => $monthName
+        ];
     }
 }

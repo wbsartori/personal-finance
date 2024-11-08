@@ -16,7 +16,6 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
-
         $entry = $this->totalEntriesForCurrentMonth();
         $output = $this->totalOutputsForCurrentMonth();
         $total = $entry['value'] - $output['value'];
@@ -52,8 +51,9 @@ class StatsOverview extends BaseWidget
 
     public function totalEntriesForCurrentMonth()
     {
-        $entries = Entry::whereYear('entry_date', '=', $this->filterDate()['year'])
-            ->whereMonth('entry_date', '=', $this->filterDate()['month'])
+        $entries = Entry::query()
+            ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('entry_date', '=', $month))
+            ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
             ->sum('value');
         return [
             'color' => 'success',
@@ -63,8 +63,9 @@ class StatsOverview extends BaseWidget
 
     public function totalOutputsForCurrentMonth()
     {
-        $outputs = Output::whereYear('output_date', '=', $this->filterDate()['year'])
-            ->whereMonth('output_date', '=', $this->filterDate()['month'])
+        $outputs = Output::query()
+            ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('output_date', '=', $month))
+            ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('output_date', '=', $year))
             ->sum('value');
         return [
             'color' => 'danger',
@@ -75,6 +76,7 @@ class StatsOverview extends BaseWidget
     public function filterDate(): array
     {
         $date = $this->filters['date'] ?? null;
+        Carbon::setLocale('pt_BR');
         $month = Carbon::parse($date)->month;
         $year = Carbon::parse($date)->year;
         $monthName = Carbon::parse($date)->monthName;
