@@ -32,9 +32,9 @@ class EntryResource extends Resource
                     ->placeholder('Descrição da entrada'),
                 Forms\Components\Select::make('type')
                     ->options([
-                        'Bonificações' => 'Bonificações',
-                        'Salário' => 'Salário',
-                        'Outros' => 'Outros',
+                        'bonificacoes' => 'Bonificações',
+                        'salario' => 'Salário',
+                        'outros' => 'Outros',
                     ])
                     ->label('Tipo'),
                 Forms\Components\TextInput::make('value')
@@ -82,7 +82,8 @@ class EntryResource extends Resource
                     ->searchable(),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('entry_date')
+                    ->label('Mês de entrada')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
