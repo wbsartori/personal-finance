@@ -50,18 +50,18 @@ class StatsOverview extends BaseWidget
             Stat::make('Salário ' . $this->peopleName(1),
                 'R$ ' . number_format($this->monthSalary(), 2, ',', '.')
             )
-                ->descriptionIcon($totalIcon)
-                ->description('Saldo mês de ' . $currentMonth)
-                ->descriptionColor($totalColor)
-                ->color($totalColor)
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->description('Salário mês de ' . $currentMonth)
+                ->descriptionColor('success')
+                ->color('success')
                 ->chart([1,1,1,1,1]),
             Stat::make('Salário ' . $this->peopleName(2),
                 'R$ ' . number_format($this->monthSalary(2), 2, ',', '.')
             )
-                ->descriptionIcon($totalIcon)
-                ->description('Saldo mês de ' . $currentMonth)
-                ->descriptionColor($totalColor)
-                ->color($totalColor)
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->description('Salário mês de ' . $currentMonth)
+                ->descriptionColor('success')
+                ->color('success')
                 ->chart([1,1,1,1,1]),
 
         ];
