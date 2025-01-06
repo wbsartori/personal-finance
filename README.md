@@ -24,25 +24,25 @@
 
 ---
 
-### Funcionamento básico
+### Funcionamento bÃ¡sico
 
-Primeiro cadastre uma pessoa no formulário de Pessoa.
-
-IMAGEM
-
-
-Após cadastrar uma pessoa você poderá cadastrar as entredas do mês.
+Primeiro cadastre uma pessoa no formulÃ¡rio de Pessoa.
 
 IMAGEM
 
 
-Apos cadastrar as entradas do mês, você pode cadastrar as saidas do mês.
+ApÃ³s cadastrar uma pessoa vocÃª poderÃ¡ cadastrar as entredas do mÃªs.
 
 IMAGEM
 
-Na Dashboard principal vocês irá visualizar o total de entradas e saidas do mês e o saldo atual,
-também será possivel verificar o historico de entradas e saidas do mês na grid abaixo onde teremos um
-botão para cadastrar um novo gasto/saida.
+
+Apos cadastrar as entradas do mÃªs, vocÃª pode cadastrar as saidas do mÃªs.
+
+IMAGEM
+
+Na Dashboard principal vocÃªs irÃ¡ visualizar o total de entradas e saidas do mÃªs e o saldo atual,
+tambÃ©m serÃ¡ possivel verificar o historico de entradas e saidas do mÃªs na grid abaixo onde teremos um
+botÃ£o para cadastrar um novo gasto/saida.
 
 
 
