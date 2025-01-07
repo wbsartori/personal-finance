@@ -46,4 +46,8 @@ botão para cadastrar um novo gasto/saida.
 
 
 
+# Revisoes
 
+- Ajustar para quando não existir pessoas cadastradas a dashboard não mostrar dados
+- Finalizar o conceito de parcelamento
+- Criar conceito de cadastro de poupança

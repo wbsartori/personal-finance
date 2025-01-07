@@ -76,6 +76,9 @@ class StatsOverview extends BaseWidget
 
     public function peopleName(int $id)
     {
+        if($id === 1 || $id === 2) {
+            return People::all()->first()->full_name;
+        }
         return People::query()->find($id)->full_name;
     }
 

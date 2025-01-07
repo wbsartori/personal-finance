@@ -110,7 +110,7 @@ class OutputResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\InstallmentPaymentRelationManager::class
         ];
     }
 

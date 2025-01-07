@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('installment_payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('outputs_id')->nullable()->constrained('outputs')->name('fk_installment_payments_outputs_id');
+            $table->foreignId('output_id')->nullable()->constrained('outputs')->name('fk_installment_payments_outputs_id');
             $table->string('description', 100);
             $table->decimal('value_of_installment', 15);
-            $table->decimal('payment_value', 15);
+            $table->integer('installment_number');
+            $table->decimal('payment_value', 15)->nullable();
             $table->date('payment_date')->nullable();
             $table->string('status', 50)->default('open');
             $table->timestamps();
