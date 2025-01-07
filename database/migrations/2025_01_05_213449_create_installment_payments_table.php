@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('installment_number');
             $table->decimal('payment_value', 15)->nullable();
             $table->date('payment_date')->nullable();
+            $table->date('payment_base_date')->nullable();
             $table->string('status', 50)->default('open');
             $table->timestamps();
         });

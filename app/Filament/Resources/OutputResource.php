@@ -58,6 +58,16 @@ class OutputResource extends Resource
                     ->label('Quem gastou ?')
                     ->hint('Pessoa que gastou o valor.')
                     ->searchable(),
+                Forms\Components\Radio::make('status')
+                    ->label('Status')
+                    ->inline()
+                    ->inlineLabel(false)
+                    ->options([
+                        'open' => 'Em aberto',
+                        'paid' => 'Pago'
+                    ])
+                    ->required()
+                    ->default('open'),
             ])->columns(1);
     }
 
@@ -110,7 +120,7 @@ class OutputResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\InstallmentPaymentRelationManager::class
+            RelationManagers\InstallmentPaymentRelationManager::class,
         ];
     }
 
