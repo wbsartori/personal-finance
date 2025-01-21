@@ -2,12 +2,10 @@
 
 namespace App\Filament\Resources\OutputResource\RelationManagers;
 
-use App\Models\InstallmentPayment;
-use App\Services\InstallmentPayment\Impl\InstallmentPaymentService as InstallmentPaymentService;
+use App\Services\InstallmentPayment\Impl\InstallmentPaymentService;
 use App\Models\Output;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -70,6 +68,28 @@ class InstallmentPaymentRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
+                Tables\Actions\Action::make('installment-divider')
+                    ->label('Dividir valores')
+                    ->form([
+                        Forms\Components\Section::make()->schema([
+                            Forms\Components\TextInput::make('output_id')->label('ID da saída')
+                                ->readOnly()
+                                ->formatStateUsing(function () {
+                                    return Output::query()->get()[0]->id;
+                                }),
+                            Forms\Components\TextInput::make('description')->label('Descrição')
+                                ->formatStateUsing(function () {
+                                    return Output::query()->get()[0]->description;
+                                }),
+                            Forms\Components\TextInput::make('installment_payment')->label('Valor')
+                                ->formatStateUsing(function () {
+                                    return Output::query()->get()[0]->value;
+                                }),
+                            Forms\Components\TextInput::make('installment')->label('Número de parcelas')->numeric(),
+                        ]),
+                    ])->action(function (array $data) {
+                        app(InstallmentPaymentService::class)->generate($data, $this->ownerRecord);
+                    }),
                 Tables\Actions\Action::make('installment-generate')
                     ->label('Gerar parcelas')
                     ->form([
@@ -90,7 +110,7 @@ class InstallmentPaymentRelationManager extends RelationManager
                             Forms\Components\TextInput::make('installment')->label('Número de parcelas')->numeric(),
                         ]),
                     ])->action(function (array $data) {
-                        app(InstallmentPaymentService::class)->generate($data, $this->ownerRecord);
+                        app(InstallmentPaymentService::class)->generateNewOutput($data, $this->ownerRecord);
                     }),
             ])->actions([
                 Tables\Actions\EditAction::make()->label(''),

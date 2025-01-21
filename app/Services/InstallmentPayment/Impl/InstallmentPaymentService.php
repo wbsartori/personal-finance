@@ -23,6 +23,13 @@ class InstallmentPaymentService implements InstallmentPaymentServiceInterface
                 'payment_date' => $this->nextMonth($model, $i),
                 'status' => strtolower('open'),
             ]);
+        }
+    }
+
+    public function generateNewOutput(array $payment, Model $model): void
+    {
+        $valueOfinstallment = $payment['installment_payment'] / $payment['installment'];
+        for ($i = 1; $i <= $payment['installment']; $i++) {
             Output::create([
                 'description' => $model->description,
                 'type' => $model->type,
@@ -31,11 +38,6 @@ class InstallmentPaymentService implements InstallmentPaymentServiceInterface
                 'people_id' => $model->people_id,
             ]);
         }
-    }
-
-    public function generateNewOutput(array $payment, Model $model): void
-    {
-        // TODO: Implement generateNewOutput() method.
     }
 
     private function nextMonth(Model $paymentDate, int $addMonth)
