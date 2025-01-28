@@ -15,6 +15,7 @@ class Output extends Model
         'value',
         'output_date',
         'people_id',
+        'status',
     ];
 
     /**

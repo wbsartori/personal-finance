@@ -4,8 +4,10 @@ namespace App\Filament\Resources\OutputResource\RelationManagers;
 
 use App\Services\InstallmentPayment\Impl\InstallmentPaymentService;
 use App\Models\Output;
+use App\Services\InstallmentPayment\InstallmentPaymentServiceInterface;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -69,28 +71,6 @@ class InstallmentPaymentRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\Action::make('installment-divider')
-                    ->label('Dividir valores')
-                    ->form([
-                        Forms\Components\Section::make()->schema([
-                            Forms\Components\TextInput::make('output_id')->label('ID da saída')
-                                ->readOnly()
-                                ->formatStateUsing(function () {
-                                    return Output::query()->get()[0]->id;
-                                }),
-                            Forms\Components\TextInput::make('description')->label('Descrição')
-                                ->formatStateUsing(function () {
-                                    return Output::query()->get()[0]->description;
-                                }),
-                            Forms\Components\TextInput::make('installment_payment')->label('Valor')
-                                ->formatStateUsing(function () {
-                                    return Output::query()->get()[0]->value;
-                                }),
-                            Forms\Components\TextInput::make('installment')->label('Número de parcelas')->numeric(),
-                        ]),
-                    ])->action(function (array $data) {
-                        app(InstallmentPaymentService::class)->generate($data, $this->ownerRecord);
-                    }),
-                Tables\Actions\Action::make('installment-generate')
                     ->label('Gerar parcelas')
                     ->form([
                         Forms\Components\Section::make()->schema([
@@ -110,7 +90,31 @@ class InstallmentPaymentRelationManager extends RelationManager
                             Forms\Components\TextInput::make('installment')->label('Número de parcelas')->numeric(),
                         ]),
                     ])->action(function (array $data) {
-                        app(InstallmentPaymentService::class)->generateNewOutput($data, $this->ownerRecord);
+                        if(in_array($this->ownerRecord->status, ['paid', 'in_installments'])) {
+                            Notification::make()
+                                ->title('Saída já está paga ou em parcelamento.')
+                                ->warning()
+                                ->send();
+
+                           return $data;
+                        }
+                        $this->installmentPaumentService()->generateNewOutput($data, $this->ownerRecord);
+                    }),
+                Tables\Actions\Action::make('remove-installment-payment')
+                    ->label('Remover parcelas')
+                    ->requiresConfirmation(function () {
+                        $response = $this->installmentPaumentService()->removeAllById($this->ownerRecord->id);
+                        if (! $response) {
+                            Notification::make()
+                                ->title('Nenhum valor de parcela encontrado para esta saída.')
+                                ->warning()
+                                ->send();
+                            return false;
+                        }
+                        return true;
+                    })
+                    ->modalSubmitAction(function () {
+                        app(InstallmentPaymentService::class)->removeAllById($this->ownerRecord->id);
                     }),
             ])->actions([
                 Tables\Actions\EditAction::make()->label(''),
@@ -121,5 +125,13 @@ class InstallmentPaymentRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])->searchable();
+    }
+
+    /**
+     * @return InstallmentPaymentServiceInterface
+     */
+    private function installmentPaumentService(): InstallmentPaymentServiceInterface
+    {
+        return app(InstallmentPaymentService::class);
     }
 }

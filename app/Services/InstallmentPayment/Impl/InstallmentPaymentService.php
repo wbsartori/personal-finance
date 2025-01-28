@@ -4,6 +4,7 @@ namespace App\Services\InstallmentPayment\Impl;
 
 use App\Models\Output;
 use App\Services\InstallmentPayment\InstallmentPaymentServiceInterface;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\InstallmentPayment as InstallmentPaymentModel;
 use Illuminate\Support\Carbon;
@@ -30,12 +31,27 @@ class InstallmentPaymentService implements InstallmentPaymentServiceInterface
     {
         $valueOfinstallment = $payment['installment_payment'] / $payment['installment'];
         for ($i = 1; $i <= $payment['installment']; $i++) {
-            Output::create([
+            $output = Output::create([
                 'description' => $model->description,
                 'type' => $model->type,
                 'value' => $valueOfinstallment,
                 'output_date' => $this->nextMonth($model, $i),
+                'payment_base_date' => $model->output_date,
                 'people_id' => $model->people_id,
+            ]);
+            InstallmentPaymentModel::create([
+                'output_id' => $model->id,
+                'original_output_id' => $output->id,
+                'description' => $payment['description'] ?? $model->description,
+                'value_of_installment' => $valueOfinstallment,
+                'installment_number' => $i,
+                'payment_value' => $valueOfinstallment,
+                'payment_date' => $this->nextMonth($model, $i),
+                'status' => strtolower('open'),
+            ]);
+            Output::where('id', '=', $model->id)->update([
+                'value' => 0,
+                'status' => 'in_installment',
             ]);
         }
     }
@@ -51,5 +67,17 @@ class InstallmentPaymentService implements InstallmentPaymentServiceInterface
             $nextMonthPaymentDate->endOfMonth();
         }
         return $nextMonthPaymentDate;
+    }
+
+    public function removeAllById(int $id): int
+    {
+        $payments = InstallmentPaymentModel::where('output_id', '=', $id)->get();
+        if($payments->isEmpty()) {
+            return false;
+        }
+        foreach ($payments as $payment) {
+            $payment->delete();
+        }
+       return true;
     }
 }

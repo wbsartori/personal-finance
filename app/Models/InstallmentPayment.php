@@ -11,6 +11,7 @@ class InstallmentPayment extends Model
 
     protected $fillable = [
         'output_id',
+        'original_output_id',
         'description',
         'value_of_installment',
         'payment_value',

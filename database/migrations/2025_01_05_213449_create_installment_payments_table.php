@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('installment_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('output_id')->nullable()->constrained('outputs')->name('fk_installment_payments_outputs_id');
+            $table->unsignedBigInteger('original_output_id')->nullable();
             $table->string('description', 100);
             $table->decimal('value_of_installment', 15);
             $table->integer('installment_number');

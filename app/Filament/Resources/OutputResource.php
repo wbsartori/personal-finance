@@ -4,10 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OutputResource\Pages;
 use App\Filament\Resources\OutputResource\RelationManagers;
+use App\Filament\Resources\OutputResource\RelationManagers\InstallmentPaymentRelationManager;
 use App\Models\Output;
 use App\Models\People;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -27,7 +29,10 @@ class OutputResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('description')
                     ->label('Descrição')
-                    ->placeholder('Descrição da saída'),
+                    ->placeholder('Descrição da saída')
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    }),
                 Forms\Components\Select::make('type')
                     ->options([
                         'alimentacao' => 'Alimentação',
@@ -44,19 +49,32 @@ class OutputResource extends Resource
                         'saude' => 'Saúde',
                         'transporte' => 'Transporte',
                     ])
-                    ->label('Tipo'),
+                    ->label('Tipo')
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    }),
                 Forms\Components\TextInput::make('value')
                     ->label('Valor')
                     ->currencyMask('.', ',')
                     ->placeholder('00,00')
-                    ->prefix('R$'),
-                Forms\Components\DateTimePicker::make('output_date')->label('Data da saída'),
+                    ->prefix('R$')
+                    ->reactive()
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    }),
+                Forms\Components\DateTimePicker::make('output_date')->label('Data da saída')
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    }),
                 Forms\Components\Select::make('people_id')
                     ->options(
                         People::query()->pluck('full_name', 'id')->toArray()
                     )
                     ->label('Quem gastou ?')
                     ->hint('Pessoa que gastou o valor.')
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    })
                     ->searchable(),
                 Forms\Components\Radio::make('status')
                     ->label('Status')
@@ -64,8 +82,12 @@ class OutputResource extends Resource
                     ->inlineLabel(false)
                     ->options([
                         'open' => 'Em aberto',
-                        'paid' => 'Pago'
+                        'paid' => 'Pago',
+                        'in_installments' => 'Parcelado',
                     ])
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    })
                     ->required()
                     ->default('open'),
             ])->columns(1);
@@ -93,6 +115,25 @@ class OutputResource extends Resource
                     ->currency()
                     ->money('BRL', 0, 'pt_BR')
                     ->label('Quanto pagou?'),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(function ($state) {
+                        if ($state === 'open') {
+                            return 'Em aberto';
+                        } else if ($state === 'in_installments') {
+                            return 'Parcelado';
+                        }
+                        return 'Pago';
+                    })
+                    ->color(function ($state) {
+                        if ($state === 'open') {
+                            return 'warning';
+                        }else if ($state === 'in_installments') {
+                            return 'gray';
+                        }
+                        return 'success';
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Data de criação')
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -120,7 +161,7 @@ class OutputResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\InstallmentPaymentRelationManager::class,
+            InstallmentPaymentRelationManager::class
         ];
     }
 
@@ -131,5 +172,18 @@ class OutputResource extends Resource
             'create' => Pages\CreateOutput::route('/create'),
             'edit' => Pages\EditOutput::route('/{record}/edit'),
         ];
+    }
+
+    private static function disabledFieldByStatus(Forms\Get $get): bool
+    {
+        if(in_array($get('status'),  ['in_installments', 'paid'])) {
+            return true;
+        }
+        return false;
+    }
+
+    private static function disabledRelation(Get $get): bool
+    {
+        return self::disabledFieldByStatus($get);
     }
 }
