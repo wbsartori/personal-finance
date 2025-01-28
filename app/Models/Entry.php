@@ -15,6 +15,7 @@ class Entry extends Model
         'value',
         'entry_date',
         'people_id',
+        'status',
     ];
 
     /**

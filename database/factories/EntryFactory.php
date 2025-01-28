@@ -22,6 +22,7 @@ class EntryFactory extends Factory
             'value' => 3000.00,
             'entry_date' => '2025-01-01 00:00:00',
             'people_id' => 1,
+            'status' => 'received',
         ];
     }
 }

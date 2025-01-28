@@ -17,6 +17,7 @@ class InstallmentPayment extends Model
         'payment_value',
         'payment_date',
         'installment_number',
+        'payment_base_date',
         'status',
     ];
     public function output(): \Illuminate\Database\Eloquent\Relations\BelongsTo

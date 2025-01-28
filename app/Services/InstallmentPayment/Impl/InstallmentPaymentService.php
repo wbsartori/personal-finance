@@ -36,7 +36,6 @@ class InstallmentPaymentService implements InstallmentPaymentServiceInterface
                 'type' => $model->type,
                 'value' => $valueOfinstallment,
                 'output_date' => $this->nextMonth($model, $i),
-                'payment_base_date' => $model->output_date,
                 'people_id' => $model->people_id,
             ]);
             InstallmentPaymentModel::create([
@@ -47,10 +46,10 @@ class InstallmentPaymentService implements InstallmentPaymentServiceInterface
                 'installment_number' => $i,
                 'payment_value' => $valueOfinstallment,
                 'payment_date' => $this->nextMonth($model, $i),
+                'payment_base_date' => $model->output_date,
                 'status' => strtolower('open'),
             ]);
             Output::where('id', '=', $model->id)->update([
-                'value' => 0,
                 'status' => 'in_installment',
             ]);
         }

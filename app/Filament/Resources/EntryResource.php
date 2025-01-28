@@ -20,7 +20,7 @@ class EntryResource extends Resource
     protected static ?string $model = Entry::class;
     protected static ?string $navigationGroup = 'Financeiro';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'Entradas';
+    protected static ?string $navigationLabel = 'Contas à receber';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -50,6 +50,19 @@ class EntryResource extends Resource
                     ->label('Quem recebeu ?')
                     ->hint('Pessoa que recebeu o valor.')
                     ->searchable(),
+                Forms\Components\Radio::make('status')
+                    ->label('Status')
+                    ->inline()
+                    ->inlineLabel(false)
+                    ->options([
+                        'open' => 'Em aberto',
+                        'received' => 'Recebido',
+                    ])
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    })
+                    ->required()
+                    ->default('open'),
             ])->columns(1);
     }
 
@@ -83,6 +96,21 @@ class EntryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(function ($state) {
+                        if ($state === 'open') {
+                            return 'Em aberto';
+                        }
+                        return 'Recebido';
+                    })
+                    ->color(function ($state) {
+                        if ($state === 'open') {
+                            return 'warning';
+                        }
+                        return 'success';
+                    })
             ])
             ->filters([
                 Tables\Filters\Filter::make('entry_date')
@@ -112,5 +140,13 @@ class EntryResource extends Resource
             'create' => Pages\CreateEntry::route('/create'),
             'edit' => Pages\EditEntry::route('/{record}/edit'),
         ];
+    }
+
+    private static function disabledFieldByStatus(Forms\Get $get): bool
+    {
+        if($get('status') === 'received') {
+            return true;
+        }
+        return false;
     }
 }

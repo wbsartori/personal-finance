@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('value');
             $table->dateTime('entry_date');
             $table->foreignId('people_id')->constrained('people');
+            $table->string('status', 80)->default('received');
             $table->timestamps();
         });
     }
