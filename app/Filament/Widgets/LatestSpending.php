@@ -17,25 +17,25 @@ class LatestSpending extends BaseWidget
 
     use InteractsWithTable;
     use InteractsWithPageFilters;
+
     protected static ?int $sort = 4;
-    protected int|string|array $columnSpan = 'full';
-
     protected static ?string $heading = 'Últimos gastos';
-
+    protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
 
         return $table
             ->query(OutputResource::getEloquentQuery()
-                ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('output_date', '=', $month))
-                ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('output_date', '=', $year))
+                ->when($this->filterDate()['month'] ?? null, fn($query, $month) => $query->whereMonth('output_date', '=', $month))
+                ->when($this->filterDate()['year'] ?? null, fn($query, $year) => $query->whereYear('output_date', '=', $year))
+                ->where('status', '!=', 'in_installment')
             )
             ->heading('Gastos do mês de ' . $this->filterDate()['monthName'])
             ->headerActions([
                 Action::make('create')
                     ->url('outputs/create')
-                    ->label('Novo gasto')
+                    ->label('Novo gasto'),
             ])
             ->defaultPaginationPageOption(5)
             ->defaultSort('created_at', 'desc')
@@ -58,6 +58,21 @@ class LatestSpending extends BaseWidget
                     ->money('BRL', 0, 'pt_BR')
                     ->sortable()
                     ->label('Quanto pagou?'),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(function ($state) {
+                        if ($state === 'open') {
+                            return 'Em aberto';
+                        }
+                        return 'Recebido';
+                    })
+                    ->color(function ($state) {
+                        if ($state === 'open') {
+                            return 'warning';
+                        }
+                        return 'success';
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Data de criação')
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -87,7 +102,7 @@ class LatestSpending extends BaseWidget
         return [
             'month' => $month,
             'year' => $year,
-            'monthName' => $monthName
+            'monthName' => $monthName,
         ];
     }
 }

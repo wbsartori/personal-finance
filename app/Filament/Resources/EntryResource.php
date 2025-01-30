@@ -29,6 +29,9 @@ class EntryResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('description')
                     ->label('Descrição')
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    })
                     ->placeholder('Descrição da entrada'),
                 Forms\Components\Select::make('type')
                     ->options([
@@ -36,19 +39,31 @@ class EntryResource extends Resource
                         'salario' => 'Salário',
                         'outros' => 'Outros',
                     ])
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    })
                     ->label('Tipo'),
                 Forms\Components\TextInput::make('value')
                     ->label('Valor')
                     ->currencyMask('.', ',')
                     ->placeholder('00,00')
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    })
                     ->prefix('R$'),
-                Forms\Components\DateTimePicker::make('entry_date')->label('Data da entrada'),
+                Forms\Components\DateTimePicker::make('entry_date')->label('Data da entrada')
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    }),
                 Forms\Components\Select::make('people_id')
                     ->options(
                         People::query()->pluck('full_name', 'id')->toArray()
                     )
                     ->label('Quem recebeu ?')
                     ->hint('Pessoa que recebeu o valor.')
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    })
                     ->searchable(),
                 Forms\Components\Radio::make('status')
                     ->label('Status')

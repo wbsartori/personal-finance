@@ -27,6 +27,12 @@ class OutputResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('id')
+                    ->label('ID')
+                    ->readOnly()
+                    ->disabled(function (Forms\Get $get){
+                        return self::disabledFieldByStatus($get);
+                    }),
                 Forms\Components\TextInput::make('description')
                     ->label('Descrição')
                     ->placeholder('Descrição da saída')
@@ -83,7 +89,7 @@ class OutputResource extends Resource
                     ->options([
                         'open' => 'Em aberto',
                         'paid' => 'Pago',
-                        'in_installments' => 'Parcelado',
+                        'in_installment' => 'Parcelado',
                     ])
                     ->disabled(function (Forms\Get $get){
                         return self::disabledFieldByStatus($get);
@@ -121,7 +127,7 @@ class OutputResource extends Resource
                     ->formatStateUsing(function ($state) {
                         if ($state === 'open') {
                             return 'Em aberto';
-                        } else if ($state === 'in_installments') {
+                        } else if ($state === 'in_installment') {
                             return 'Parcelado';
                         }
                         return 'Pago';
@@ -133,7 +139,7 @@ class OutputResource extends Resource
                             return 'gray';
                         }
                         return 'success';
-                    }),
+                    })->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Data de criação')
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -176,7 +182,7 @@ class OutputResource extends Resource
 
     private static function disabledFieldByStatus(Forms\Get $get): bool
     {
-        if(in_array($get('status'),  ['in_installments', 'paid'])) {
+        if(in_array($get('status'),  ['in_installment', 'paid'])) {
             return true;
         }
         return false;

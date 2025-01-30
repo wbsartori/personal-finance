@@ -15,97 +15,30 @@ class StatsOverview extends BaseWidget
 {
     use InteractsWithPageFilters;
 
-    protected function getStats(): array
-    {
-        $entry = $this->totalEntriesForCurrentMonth();
-        $output = $this->totalOutputsForCurrentMonth();
-        $total = $entry['value'] - $output['value'];
-        $totalIcon = $total >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
-        $totalColor = $total >= 0 ? 'success' : 'danger';
-        $currentMonth = $this->filterDate()['monthName'];
-        return [
-            Stat::make(
-                'Entradas',
-                'R$ ' . number_format($entry['value'], 2, ',', '.')
-            )->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->description('Ganhos mês de ' . $currentMonth)
-                ->color($entry['color'])
-            ->chart([1,1,1,1,1]),
-            Stat::make(
-                'Saídas',
-                'R$ ' . number_format($output['value'], 2, ',', '.')
-            )
-                ->descriptionIcon('heroicon-m-arrow-trending-down')
-                ->description('Gastos mês de ' . $currentMonth)
-                ->color($output['color'])
-                ->chart([1,1,1,1,1]),
-            Stat::make('Saldo',
-                'R$ ' . number_format($total, 2, ',', '.')
-            )
-                ->descriptionIcon($totalIcon)
-                ->description('Saldo mês de ' . $currentMonth)
-                ->descriptionColor($totalColor)
-                ->color($totalColor)
-                ->chart([1,1,1,1,1]),
-            Stat::make('Salário ' . $this->peopleName(1),
-                'R$ ' . number_format($this->monthSalary(), 2, ',', '.')
-            )
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->description('Salário mês de ' . $currentMonth)
-                ->descriptionColor('success')
-                ->color('success')
-                ->chart([1,1,1,1,1]),
-            Stat::make('Salário ' . $this->peopleName(2),
-                'R$ ' . number_format($this->monthSalary(2), 2, ',', '.')
-            )
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->description('Salário mês de ' . $currentMonth)
-                ->descriptionColor('success')
-                ->color('success')
-                ->chart([1,1,1,1,1]),
-            Stat::make('Outros valores ',
-                'R$ ' . number_format($this->monthOtherValues(), 2, ',', '.')
-            )
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->description('Salário mês de ' . $currentMonth)
-                ->descriptionColor('success')
-                ->color('success')
-                ->chart([1,1,1,1,1]),
-        ];
-    }
-
-    public function peopleName(int $id)
-    {
-        if($id === 1 || $id === 2) {
-            return People::all()->first()->full_name;
-        }
-        return People::query()->find($id)->full_name;
-    }
-
     public function monthSalary(int $people = 1): float
     {
         return Entry::query()
-            ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('entry_date', '=', $month))
-            ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
-            ->when('salario', fn ($query, $year) => $query->where('type', '=', 'salario'))
-            ->when($people, fn ($query, $year) => $query->where('people_id', '=', $people))
+            ->when($this->filterDate()['month'] ?? null, fn($query, $month) => $query->whereMonth('entry_date', '=', $month))
+            ->when($this->filterDate()['year'] ?? null, fn($query, $year) => $query->whereYear('entry_date', '=', $year))
+            ->when('salario', fn($query, $year) => $query->where('type', '=', 'salario'))
+            ->when($people, fn($query, $year) => $query->where('people_id', '=', $people))
             ->sum('value');
     }
 
     public function monthOtherValues(): float
     {
         return Entry::query()
-            ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('entry_date', '=', $month))
-            ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
-            ->when('outros', fn ($query, $year) => $query->whereIn('type', ['outros', 'bonificacoes']))
+            ->when($this->filterDate()['month'] ?? null, fn($query, $month) => $query->whereMonth('entry_date', '=', $month))
+            ->when($this->filterDate()['year'] ?? null, fn($query, $year) => $query->whereYear('entry_date', '=', $year))
+            ->when('outros', fn($query, $year) => $query->whereIn('type', ['outros', 'bonificacoes']))
             ->sum('value');
     }
 
     public function totalEntriesForCurrentMonth()
     {
         $entries = Entry::query()
-            ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('entry_date', '=', $month))
-            ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
+            ->when($this->filterDate()['month'] ?? null, fn($query, $month) => $query->whereMonth('entry_date', '=', $month))
+            ->when($this->filterDate()['year'] ?? null, fn($query, $year) => $query->whereYear('entry_date', '=', $year))
             ->sum('value');
         return [
             'color' => 'success',
@@ -113,12 +46,17 @@ class StatsOverview extends BaseWidget
         ];
     }
 
-    public function totalOutputsForCurrentMonth()
+    public function totalOutputsForCurrentMonth(): array
     {
         $outputs = Output::query()
-            ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('output_date', '=', $month))
-            ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('output_date', '=', $year))
+            ->when($this->filterDate()['month'] ?? null, fn($query, $month) => $query->whereMonth('output_date', '=', $month))
+            ->when($this->filterDate()['year'] ?? null, fn($query, $year) => $query->whereYear('output_date', '=', $year))
+            ->whereNotIn('id', function ($query) {
+                $query->select('output_id')
+                    ->from('installment_payments');
+            })
             ->sum('value');
+
         return [
             'color' => 'danger',
             'value' => $outputs,
@@ -135,7 +73,71 @@ class StatsOverview extends BaseWidget
         return [
             'month' => $month,
             'year' => $year,
-            'monthName' => $monthName
+            'monthName' => $monthName,
         ];
+    }
+
+    protected function getStats(): array
+    {
+        $entry = $this->totalEntriesForCurrentMonth();
+        $output = $this->totalOutputsForCurrentMonth();
+        $total = $entry['value'] - $output['value'];
+        $totalIcon = $total >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
+        $totalColor = $total >= 0 ? 'success' : 'danger';
+        $currentMonth = $this->filterDate()['monthName'];
+
+        $peoples = People::join('entries', 'entries.people_id', '=', 'people.id')
+            ->select('people.*')
+            ->get();
+
+        $dash = [
+            Stat::make(
+                'Entradas',
+                'R$ ' . number_format($entry['value'], 2, ',', '.')
+            )->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->description('Ganhos mês de ' . $currentMonth)
+                ->color($entry['color'])
+                ->chart([1, 1, 1, 1, 1]),
+            Stat::make(
+                'Saídas',
+                'R$ ' . number_format($output['value'], 2, ',', '.')
+            )
+                ->descriptionIcon('heroicon-m-arrow-trending-down')
+                ->description('Gastos mês de ' . $currentMonth)
+                ->color($output['color'])
+                ->chart([1, 1, 1, 1, 1]),
+            Stat::make('Saldo',
+                'R$ ' . number_format($total, 2, ',', '.')
+            )
+                ->descriptionIcon($totalIcon)
+                ->description('Saldo mês de ' . $currentMonth)
+                ->descriptionColor($totalColor)
+                ->color($totalColor)
+                ->chart([1, 1, 1, 1, 1]),
+        ];
+
+        foreach ($peoples as $people) {
+            $dash = array_merge($dash, [
+                Stat::make('Salário ' . $people->full_name,
+                    'R$ ' . number_format($this->monthSalary(), 2, ',', '.')
+                )
+                    ->descriptionIcon('heroicon-m-arrow-trending-up')
+                    ->description('Salário mês de ' . $currentMonth)
+                    ->descriptionColor('success')
+                    ->color('success')
+                    ->chart([1, 1, 1, 1, 1]),
+            ]);
+        }
+
+        return array_merge($dash, [
+            Stat::make('Outros valores ',
+                'R$ ' . number_format($this->monthOtherValues(), 2, ',', '.')
+            )
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->description('Salário mês de ' . $currentMonth)
+                ->descriptionColor('success')
+                ->color('success')
+                ->chart([1, 1, 1, 1, 1]),
+        ]);
     }
 }

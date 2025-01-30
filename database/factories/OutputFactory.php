@@ -19,7 +19,7 @@ class OutputFactory extends Factory
         return [
             'description' => $this->faker->name('masculine'),
             'type' => 'cartao_credito',
-            'value' => 5000.00,
+            'value' => 500.00,
             'output_date' => '2025-01-01 00:00:00',
             'people_id' => 1,
         ];
