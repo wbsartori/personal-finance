@@ -24,4 +24,9 @@ class Output extends Model
     {
         return $this->belongsTo(People::class);
     }
+
+    public function histories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(History::class);
+    }
 }

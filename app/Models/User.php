@@ -51,4 +51,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return true;
     }
+
+    public function histories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(History::class);
+    }
 }
