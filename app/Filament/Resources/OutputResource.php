@@ -110,7 +110,7 @@ class OutputResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\HistoryRelationManager::class,
+//            RelationManagers\HistoryRelationManager::class,
         ];
     }
     public static function getPages(): array

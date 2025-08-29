@@ -24,7 +24,10 @@ class HistoryOutputChanges extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(History::query())
+            ->query(History::query()
+                ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('output_date', '=', $month))
+                ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('output_date', '=', $year))
+            )
             ->heading('Histórico de alterações')
             ->defaultPaginationPageOption(5)
             ->defaultSort('created_at', 'desc')
