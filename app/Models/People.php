@@ -12,4 +12,9 @@ class People extends Model
     protected $fillable = [
       'full_name'
     ];
+
+    public function histories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(History::class);
+    }
 }

@@ -76,7 +76,7 @@ class StatsOverview extends BaseWidget
 
     public function peopleName(int $id)
     {
-        return People::query()->find($id)->full_name;
+        return People::query()->find($id)->full_name ?? 'sem cadastro';
     }
 
     public function monthSalary(int $people = 1): float

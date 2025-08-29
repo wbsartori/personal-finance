@@ -2,22 +2,20 @@
 
 namespace App\Filament\Widgets;
 
-use App\Filament\Resources\OutputResource;
-use App\Models\Output;
+use App\Models\History;
 use Carbon\Carbon;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
 
-class LatestSpending extends BaseWidget
+class HistoryOutputChanges extends BaseWidget
 {
 
     use InteractsWithTable;
     use InteractsWithPageFilters;
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 4;
     protected int|string|array $columnSpan = 'full';
 
     protected static ?string $heading = 'Últimos gastos';
@@ -26,21 +24,16 @@ class LatestSpending extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(OutputResource::getEloquentQuery()
+            ->query(History::query()
                 ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('output_date', '=', $month))
                 ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('output_date', '=', $year))
             )
-            ->heading('Gastos do mês de ' . $this->filterDate()['monthName'])
-            ->headerActions([
-                Action::make('create')
-                    ->url('outputs/create')
-                    ->label('Novo gasto')
-            ])
+            ->heading('Histórico de alterações')
             ->defaultPaginationPageOption(5)
             ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('output_date')
-                    ->label('Mês de saída')
+                    ->label('Data da alteração')
                     ->date('d-m-Y', 'America/Sao_Paulo')
                     ->sortable()
                     ->searchable(),
@@ -52,27 +45,15 @@ class LatestSpending extends BaseWidget
                     ->sortable()
                     ->label('O que pagou?')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->sortable()
+                    ->label('O que pagou?')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('value')
                     ->currency()
                     ->money('BRL', 0, 'pt_BR')
                     ->sortable()
-                    ->label('Quanto pagou?'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Data de criação')
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Data de atualização')
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->sortable()
-                    ->searchable(),
-            ])
-            ->actions([
-                Tables\Actions\Action::make('edit')
-                    ->url(fn(Output $record): string => route('filament.admin.resources.outputs.edit', $record))
-                    ->icon('heroicon-o-pencil-square')
-                    ->label(''),
+                    ->label('Novo valor'),
             ]);
     }
 
