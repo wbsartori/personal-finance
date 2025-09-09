@@ -11,4 +11,11 @@ class CreatePerson extends CreateRecord
     protected static string $resource = PeopleResource::class;
 
     protected static bool $canCreateAnother = false;
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['user_id'] = auth()->id();
+
+        return $data;
+    }
 }

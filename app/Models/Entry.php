@@ -15,6 +15,7 @@ class Entry extends Model
         'value',
         'entry_date',
         'people_id',
+        'user_id',
     ];
 
     /**
@@ -23,5 +24,13 @@ class Entry extends Model
     public function people(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(People::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

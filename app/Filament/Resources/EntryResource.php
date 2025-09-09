@@ -45,7 +45,7 @@ class EntryResource extends Resource
                 Forms\Components\DateTimePicker::make('entry_date')->label('Data da entrada'),
                 Forms\Components\Select::make('people_id')
                     ->options(
-                        People::query()->pluck('full_name', 'id')->toArray()
+                        People::query()->where('user_id', auth()->id())->pluck('full_name', 'id')->toArray()
                     )
                     ->label('Quem recebeu ?')
                     ->hint('Pessoa que recebeu o valor.')
@@ -112,5 +112,10 @@ class EntryResource extends Resource
             'create' => Pages\CreateEntry::route('/create'),
             'edit' => Pages\EditEntry::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('user_id', auth()->id());
     }
 }

@@ -76,12 +76,15 @@ class StatsOverview extends BaseWidget
 
     public function peopleName(int $id)
     {
-        return People::query()->find($id)->full_name ?? 'sem cadastro';
+        return People::query()
+            ->where('user_id', auth()->id())
+            ->find($id)->full_name ?? 'sem cadastro';
     }
 
     public function monthSalary(int $people = 1): float
     {
         return Entry::query()
+            ->where('user_id', auth()->id())
             ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('entry_date', '=', $month))
             ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
             ->when('salario', fn ($query, $year) => $query->where('type', '=', 'salario'))
@@ -92,6 +95,7 @@ class StatsOverview extends BaseWidget
     public function monthOtherValues(): float
     {
         return Entry::query()
+            ->where('user_id', auth()->id())
             ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('entry_date', '=', $month))
             ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
             ->when('outros', fn ($query, $year) => $query->whereIn('type', ['outros', 'bonificacoes']))
@@ -101,6 +105,7 @@ class StatsOverview extends BaseWidget
     public function totalEntriesForCurrentMonth()
     {
         $entries = Entry::query()
+            ->where('user_id', auth()->id())
             ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('entry_date', '=', $month))
             ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('entry_date', '=', $year))
             ->sum('value');
@@ -113,6 +118,7 @@ class StatsOverview extends BaseWidget
     public function totalOutputsForCurrentMonth()
     {
         $outputs = Output::query()
+            ->where('user_id', auth()->id())
             ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('output_date', '=', $month))
             ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('output_date', '=', $year))
             ->sum('value');

@@ -10,4 +10,11 @@ class CreateEntry extends CreateRecord
 {
     protected static string $resource = EntryResource::class;
     protected static bool $canCreateAnother = false;
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['user_id'] = auth()->id();
+
+        return $data;
+    }
 }

@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class OutputResource extends Resource
 {
@@ -53,7 +54,7 @@ class OutputResource extends Resource
                 Forms\Components\DateTimePicker::make('output_date')->label('Data da saída'),
                 Forms\Components\Select::make('people_id')
                     ->options(
-                        People::query()->pluck('full_name', 'id')->toArray()
+                        People::query()->where('user_id', auth()->id())->pluck('full_name', 'id')->toArray()
                     )
                     ->label('Quem gastou ?')
                     ->hint('Pessoa que gastou o valor.')
@@ -120,5 +121,10 @@ class OutputResource extends Resource
             'create' => Pages\CreateOutput::route('/create'),
             'edit' => Pages\EditOutput::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('user_id', auth()->id());
     }
 }
