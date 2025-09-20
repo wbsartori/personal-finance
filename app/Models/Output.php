@@ -15,6 +15,7 @@ class Output extends Model
         'value',
         'output_date',
         'people_id',
+        'user_id',
     ];
 
     /**
@@ -25,8 +26,13 @@ class Output extends Model
         return $this->belongsTo(People::class);
     }
 
-    public function historY(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function history(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(History::class);
+    }
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

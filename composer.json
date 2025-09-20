@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.2",
         "ariaieboy/filament-currency": "^1.4",
+        "doctrine/dbal": "^3.10",
         "filament/filament": "^3.2",
         "filament/widgets": "^3.2",
         "laravel/framework": "^11.0",

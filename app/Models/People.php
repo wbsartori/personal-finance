@@ -10,11 +10,17 @@ class People extends Model
     use HasFactory;
 
     protected $fillable = [
-      'full_name'
+        'full_name',
+        'user_id',
     ];
 
     public function histories(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(History::class);
+    }
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }
