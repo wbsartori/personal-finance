@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Entry;
+use App\Models\Output;
 use App\Models\People;
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -28,17 +29,17 @@ class AssignOrphanDataToUser extends Command
      */
     public function handle()
     {
-        $userId = $this->ask('Qual È o ID do usu·rio que deve se tornar o dono dos registros existentes?');
+        $userId = $this->ask('Qual √© o ID do usu√°rio que deve se tornar o dono dos registros existentes?');
 
         if (!is_numeric($userId) || !$user = User::find($userId)) {
-            $this->error("Nenhum usu·rio encontrado com o ID: {$userId}. OperaÁ„o cancelada.");
+            $this->error("Nenhum usu√°rio encontrado com o ID: {$userId}. Opera√ß√£o cancelada.");
             return 1;
         }
 
-        $this->info("Usu·rio '{$user->name}' (ID: {$user->id}) selecionado.");
+        $this->info("Usu√°rio '{$user->name}' (ID: {$user->id}) selecionado.");
 
-        if (!$this->confirm('VocÍ confirma que deseja atribuir todos os registros sem dono a este usu·rio?', true)) {
-            $this->info('OperaÁ„o cancelada pelo usu·rio.');
+        if (!$this->confirm('Voc√™ confirma que deseja atribuir todos os registros sem dono a este usu√°rio?', true)) {
+            $this->info('Opera√ß√£o cancelada pelo usu√°rio.');
             return 1;
         }
 
@@ -51,10 +52,10 @@ class AssignOrphanDataToUser extends Command
         $this->info("{$entriesCount} registros atualizados em 'entries'.");
 
         $this->info('Atualizando tabela "outputs"...');
-        $outputsCount = Entry::whereNull('user_id')->update(['user_id' => $userId]);
+        $outputsCount = Output::whereNull('user_id')->update(['user_id' => $userId]);
         $this->info("{$outputsCount} registros atualizados em 'outputs'.");
 
-        $this->info("\nOperaÁ„o concluÌda com sucesso!");
+        $this->info("\nOpera√ß√£o conclu√≠da com sucesso!");
 
         return 0;
     }

@@ -67,7 +67,7 @@ class StatsOverview extends BaseWidget
                 'R$ ' . number_format($this->monthOtherValues(), 2, ',', '.')
             )
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->description('Salário mês de ' . $currentMonth)
+                ->description('Outros valores mês de ' . $currentMonth)
                 ->descriptionColor('success')
                 ->color('success')
                 ->chart([1,1,1,1,1]),
