@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class FinSaida extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'users_id',
+        'observacoes',
+        'valor',
+        'forma_pagamento',
+        'tipo_lancamento',
+        'numero_parcela',
+        'data_vencimento',
+        'data_pagamento',
+        'status',
+        'mes',
+        'ano',
+    ];
 }

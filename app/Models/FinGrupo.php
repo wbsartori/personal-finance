@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class FinGrupo extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['nome'];
 }

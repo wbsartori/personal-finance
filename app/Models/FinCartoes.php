@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class FinCartoes extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['nome'];
 }
