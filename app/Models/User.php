@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,7 +53,7 @@ class User extends Authenticatable implements FilamentUser
         return true;
     }
 
-    public function histories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function histories(): HasMany
     {
         return $this->hasMany(History::class);
     }

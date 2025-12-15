@@ -2,11 +2,12 @@
 
 namespace App\Filament\Widgets;
 
+use Filament\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
 use App\Filament\Resources\OutputResource;
 use App\Models\Output;
 use Carbon\Carbon;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -39,37 +40,37 @@ class LatestSpending extends BaseWidget
             ->defaultPaginationPageOption(5)
             ->defaultSort('created_at', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('output_date')
+                TextColumn::make('output_date')
                     ->label('Mês de saída')
                     ->date('d-m-Y', 'America/Sao_Paulo')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('people.full_name')
+                TextColumn::make('people.full_name')
                     ->label('Quem pagou?')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->sortable()
                     ->label('O que pagou?')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('value')
+                TextColumn::make('value')
                     ->currency()
                     ->money('BRL', 0, 'pt_BR')
                     ->sortable()
                     ->label('Quanto pagou?'),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Data de criação')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->label('Data de atualização')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable()
                     ->searchable(),
             ])
-            ->actions([
-                Tables\Actions\Action::make('edit')
+            ->recordActions([
+                Action::make('edit')
                     ->url(fn(Output $record): string => route('filament.admin.resources.outputs.edit', $record))
                     ->icon('heroicon-o-pencil-square')
                     ->label(''),
@@ -78,7 +79,7 @@ class LatestSpending extends BaseWidget
 
     public function filterDate(): array
     {
-        $date = $this->filters['date'] ?? null;
+        $date = $this->pageFilters['date'] ?? null;
         Carbon::setLocale('pt_BR');
         $month = Carbon::parse($date)->month;
         $year = Carbon::parse($date)->year;

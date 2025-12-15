@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use Filament\Tables\Columns\TextColumn;
 use App\Models\History;
 use Carbon\Carbon;
 use Filament\Tables;
@@ -32,24 +33,24 @@ class HistoryOutputChanges extends BaseWidget
             ->defaultPaginationPageOption(5)
             ->defaultSort('created_at', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('output_date')
+                TextColumn::make('output_date')
                     ->label('Data da alteração')
                     ->date('d-m-Y', 'America/Sao_Paulo')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('people.full_name')
+                TextColumn::make('people.full_name')
                     ->label('Quem pagou?')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->sortable()
                     ->label('O que pagou?')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->sortable()
                     ->label('O que pagou?')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('value')
+                TextColumn::make('value')
                     ->currency()
                     ->money('BRL', 0, 'pt_BR')
                     ->sortable()
@@ -59,7 +60,7 @@ class HistoryOutputChanges extends BaseWidget
 
     public function filterDate(): array
     {
-        $date = $this->filters['date'] ?? null;
+        $date = $this->pageFilters['date'] ?? null;
         Carbon::setLocale('pt_BR');
         $month = Carbon::parse($date)->month;
         $year = Carbon::parse($date)->year;

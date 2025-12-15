@@ -124,7 +124,7 @@ class StatsOverview extends BaseWidget
 
     public function filterDate(): array
     {
-        $date = $this->filters['date'] ?? null;
+        $date = $this->pageFilters['date'] ?? null;
         Carbon::setLocale('pt_BR');
         $month = Carbon::parse($date)->month;
         $year = Carbon::parse($date)->year;

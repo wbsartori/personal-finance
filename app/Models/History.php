@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,17 +20,17 @@ class History extends Model
         'output_date',
     ];
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function output(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function output(): BelongsTo
     {
         return $this->belongsTo(Output::class);
     }
 
-    public function people(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function people(): BelongsTo
     {
         return $this->belongsTo(People::class);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,14 +20,14 @@ class Output extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function people(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function people(): BelongsTo
     {
         return $this->belongsTo(People::class);
     }
 
-    public function historY(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function historY(): HasMany
     {
         return $this->hasMany(History::class);
     }

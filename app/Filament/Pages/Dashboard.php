@@ -4,16 +4,16 @@ namespace App\Filament\Pages;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
 use Filament\Pages\Dashboard as BaseDashboard;
+use Illuminate\Support\Facades\Schema;
 
 class Dashboard extends BaseDashboard
 {
     use BaseDashboard\Concerns\HasFiltersForm;
 
-    public function filtersForm(Form $form): Form
+    public function filtersForm(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->components([
             Section::make()->schema([
                 DatePicker::make('date')->label('Mẽs'),
             ])
