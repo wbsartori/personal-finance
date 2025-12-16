@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 //Route::get('/user', function (Request $request) {
@@ -8,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 //})->middleware('auth:sanctum');
 
 
-Route::apiResource('cartoes', \App\Http\Financeiro\Controllers\FinCartaoController::class);
-Route::apiResource('grupos', \App\Http\Financeiro\Controllers\FinGrupoController::class);
-Route::apiResource('receitas', \App\Http\Financeiro\Controllers\FinReceitaController::class);
-Route::apiResource('investimentos', \App\Http\Financeiro\Controllers\FinInvestimentoController::class);
+Route::apiResource('cartoes', \App\Http\Cadastros\Controllers\FinCartaoController::class);
+Route::apiResource('grupos', \App\Http\Cadastros\Controllers\FinGrupoController::class);
+Route::apiResource('receitas', \App\Http\Cadastros\Controllers\FinReceitaController::class);
+Route::apiResource('investimentos', \App\Http\Cadastros\Controllers\FinInvestimentoController::class);
