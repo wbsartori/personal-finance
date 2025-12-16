@@ -7,7 +7,7 @@ namespace App\Enums;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Foundation\Application;
 
-Enum Status: string
+Enum StatusEntrada: string
 {
     case PREVISTO = 'P';
     case ATRASADO = 'A';

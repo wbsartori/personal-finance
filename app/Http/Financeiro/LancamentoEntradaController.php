@@ -33,25 +33,30 @@ class LancamentoEntradaController
             'users_id' => 'required|integer|exists:users,id',
             'observacoes' => 'nullable|string|max:500',
             'valor' => 'required|numeric|min:0',
-            'forma_pagamento' => 'required|string|max:255',
+            'forma_pagamento' => 'required|string|in:PIX,DEB,DIN,BOL,VAL',
             'tipo_lancamento' => 'required|string|max:255',
-            'tipo_investimento' => 'nullable|string|max:255',
+            'tipo_investimento' => 'nullable|string|in:A,R,D',
             'numero_parcela' => 'nullable|integer|min:1',
             'data_vencimento' => 'required|date',
             'data_pagamento' => 'nullable|date|after_or_equal:data_vencimento',
             'data_investimento' => 'nullable|date',
             'cartao_credito' => 'nullable|integer',
-            'status' => 'required|string|in:pago,pendente,cancelado',
-            'mes' => 'required|integer|between:1,12',
-            'ano' => 'required|integer|digits:4',
+            'status' => 'required|string|in:A,R,P',
         ]);
 
         $records = FinEntrada::create($validated);
 
+        if($records) {
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::SUCESSO)
+                ->message('cartões', MensagensRetorno::STORE_PADRAO)
+                ->data([$records])
+                ->response();
+        }
         return MensagensRetorno::make()
-            ->status(MensagensRetorno::SUCESSO)
-            ->message('cartões', MensagensRetorno::STORE_PADRAO)
-            ->data([$records])
+            ->status(MensagensRetorno::ERRO)
+            ->message(MensagensRetorno::ERRO_PADRAO)
+            ->data($records->where('id', $request->id)->get()->toArray())
             ->response();
     }
 
@@ -77,17 +82,15 @@ class LancamentoEntradaController
             'users_id' => 'required|integer|exists:users,id',
             'observacoes' => 'nullable|string|max:500',
             'valor' => 'required|numeric|min:0',
-            'forma_pagamento' => 'required|string|max:255',
+            'forma_pagamento' => 'required|string|in:PIX,DEB,DIN,BOL,VAL',
             'tipo_lancamento' => 'required|string|max:255',
-            'tipo_investimento' => 'nullable|string|max:255',
+            'tipo_investimento' => 'nullable|string|in:A,R,D',
             'numero_parcela' => 'nullable|integer|min:1',
             'data_vencimento' => 'required|date',
             'data_pagamento' => 'nullable|date|after_or_equal:data_vencimento',
             'data_investimento' => 'nullable|date',
             'cartao_credito' => 'nullable|integer',
-            'status' => 'required|string|in:pago,pendente,cancelado',
-            'mes' => 'required|integer|between:1,12',
-            'ano' => 'required|integer|digits:4',
+            'status' => 'required|string|in:A,R,P',
         ]);
 
         $records = $finEntrada->where('id', $id)->update($validated);

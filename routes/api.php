@@ -11,3 +11,6 @@ Route::apiResource('cartoes', \App\Http\Cadastros\Controllers\FinCartaoControlle
 Route::apiResource('grupos', \App\Http\Cadastros\Controllers\FinGrupoController::class);
 Route::apiResource('receitas', \App\Http\Cadastros\Controllers\FinReceitaController::class);
 Route::apiResource('investimentos', \App\Http\Cadastros\Controllers\FinInvestimentoController::class);
+Route::apiResource('lancamentos/entradas', \App\Http\Financeiro\LancamentoEntradaController::class);
+Route::apiResource('lancamentos/saidas', \App\Http\Financeiro\LancamentoSaidaController::class);
+Route::apiResource('lancamentos/investimentos', \App\Http\Financeiro\LancamentoInvestimentoController::class);
