@@ -13,13 +13,7 @@ return new class extends Migration
     {
         Schema::create('fin_investimentos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('users_id');
-            $table->string('tipo')->default('A'); // A - Aporte, R - Retirada ou D - Dividendo
-            $table->string('observacoes')->nullable();
-            $table->decimal('valor', 15)->nullable();
-            $table->date('data_investimento')->nullable();
-            $table->string('mes');
-            $table->string('ano');
+            $table->string('nome');
             $table->timestamps();
         });
     }

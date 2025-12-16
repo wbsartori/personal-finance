@@ -22,3 +22,6 @@ public/js/filament
 .local
 .config
 .cache
+
+.bash_history
+package-lock.json

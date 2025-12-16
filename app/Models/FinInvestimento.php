@@ -9,13 +9,5 @@ class FinInvestimento extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'users_id',
-        'observacoes',
-        'valor',
-        'tipo',
-        'data_investimento',
-        'mes',
-        'ano',
-    ];
+    protected $fillable = ['nome'];
 }
