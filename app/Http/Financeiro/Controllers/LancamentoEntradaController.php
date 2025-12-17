@@ -8,6 +8,8 @@ use App\Http\Financeiro\Requests\LancamentoEntradaRequest;
 use App\Models\FinEntrada;
 use App\Utils\MensagensRetorno;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class LancamentoEntradaController
 {
@@ -16,12 +18,27 @@ class LancamentoEntradaController
      */
     public function index(): JsonResponse
     {
-        $records = FinEntrada::all()->toArray();
-        return MensagensRetorno::make()
-            ->status(MensagensRetorno::SUCESSO)
-            ->message(MensagensRetorno::INDEX_PADRAO)
-            ->data($records)
-            ->response();
+        try {
+            $records = FinEntrada::all()->toArray();
+            if($records) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::SUCESSO)
+                    ->message(MensagensRetorno::INDEX_PADRAO)
+                    ->data($records)
+                    ->response();
+            }
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::SUCESSO)
+                ->message(MensagensRetorno::NENHUM_REGISTRO_ENCONTRADO)
+                ->data($records)
+                ->response();
+        } catch (Throwable $throwable) {
+            Log::error($throwable->getMessage());
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_INTERNO_500)
+                ->response(500);
+        }
     }
 
     /**
@@ -29,22 +46,29 @@ class LancamentoEntradaController
      */
     public function store(LancamentoEntradaRequest $request): JsonResponse
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
+            $records = FinEntrada::create($validated);
 
-        $records = FinEntrada::create($validated);
-
-        if($records) {
+            if($records) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::SUCESSO)
+                    ->message(MensagensRetorno::STORE_PADRAO)
+                    ->data($records)
+                    ->response();
+            }
             return MensagensRetorno::make()
-                ->status(MensagensRetorno::SUCESSO)
-                ->message(MensagensRetorno::STORE_PADRAO)
-                ->data([$records])
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_PADRAO)
+                ->data($records->where('id', $request->id)->get()->toArray())
                 ->response();
+        } catch (Throwable $throwable) {
+            Log::error($throwable->getMessage());
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_INTERNO_500)
+                ->response(500);
         }
-        return MensagensRetorno::make()
-            ->status(MensagensRetorno::ERRO)
-            ->message(MensagensRetorno::ERRO_PADRAO)
-            ->data($records->where('id', $request->id)->get()->toArray())
-            ->response();
     }
 
     /**
@@ -52,12 +76,26 @@ class LancamentoEntradaController
      */
     public function show(int $id): JsonResponse
     {
-        $records = FinEntrada::findOrFail($id)->toArray();
-        return MensagensRetorno::make()
-            ->status(MensagensRetorno::SUCESSO)
-            ->message(MensagensRetorno::SHOW_PADRAO)
-            ->data([$records])
-            ->response();
+        try {
+            $records = FinEntrada::where('id', $id)->get()->toArray();
+            if($records) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::SUCESSO)
+                    ->message(MensagensRetorno::SHOW_PADRAO)
+                    ->data([$records])
+                    ->response();
+            }
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::SUCESSO)
+                ->message(MensagensRetorno::NENHUM_REGISTRO_ENCONTRADO)
+                ->response();
+        } catch (Throwable $throwable) {
+            Log::error($throwable->getMessage());
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_INTERNO_500)
+                ->response(500);
+        }
     }
 
     /**
@@ -65,22 +103,29 @@ class LancamentoEntradaController
      */
     public function update(LancamentoEntradaRequest $request, FinEntrada $finEntrada, int $id): JsonResponse
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
+            $records = $finEntrada->where('id', $id)->update($validated);
 
-        $records = $finEntrada->where('id', $id)->update($validated);
-
-        if ($records) {
+            if ($records) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::SUCESSO)
+                    ->message(MensagensRetorno::UPDATE_PADRAO)
+                    ->data($finEntrada->where('id', $id)->get()->toArray())
+                    ->response();
+            }
             return MensagensRetorno::make()
-                ->status(MensagensRetorno::SUCESSO)
-                ->message(MensagensRetorno::UPDATE_PADRAO)
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_PADRAO)
                 ->data($finEntrada->where('id', $id)->get()->toArray())
                 ->response();
+        } catch (Throwable $throwable) {
+            Log::error($throwable->getMessage());
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_INTERNO_500)
+                ->response(500);
         }
-        return MensagensRetorno::make()
-            ->status(MensagensRetorno::ERRO)
-            ->message(MensagensRetorno::ERRO_PADRAO)
-            ->data($finEntrada->where('id', $id)->get()->toArray())
-            ->response();
     }
 
     /**
@@ -88,8 +133,14 @@ class LancamentoEntradaController
      */
     public function destroy(int $id): JsonResponse
     {
-        $finEntrada = FinEntrada::where('id', $id)->exists();
-        if ($finEntrada) {
+        try {
+            if (!FinEntrada::where('id', $id)->exists()) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::ERRO)
+                    ->message("O id da entrada {$id} não foi encontrado")
+                    ->response();
+            }
+
             $records = FinEntrada::where('id', $id)->delete();
 
             if ($records) {
@@ -98,10 +149,16 @@ class LancamentoEntradaController
                     ->message(MensagensRetorno::DELETE_PADRAO)
                     ->response();
             }
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_PADRAO)
+                ->response();
+        } catch (Throwable $throwable) {
+            Log::error($throwable->getMessage());
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_INTERNO_500)
+                ->response(500);
         }
-        return MensagensRetorno::make()
-            ->status(MensagensRetorno::ERRO)
-            ->message(MensagensRetorno::ERRO_PADRAO)
-            ->response();
     }
 }

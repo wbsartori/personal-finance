@@ -136,16 +136,19 @@ class LancamentoSaidaController
     public function destroy(int $id): JsonResponse
     {
         try {
-            $FinSaida = FinSaida::where('id', $id)->exists();
-            if ($FinSaida) {
-                $records = FinSaida::where('id', $id)->delete();
+            if (!FinSaida::where('id', $id)->exists()) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::ERRO)
+                    ->message("O id da saída {$id} não foi encontrado")
+                    ->response();
+            }
 
-                if ($records) {
-                    return MensagensRetorno::make()
-                        ->status(MensagensRetorno::SUCESSO)
-                        ->message(MensagensRetorno::DELETE_PADRAO)
-                        ->response();
-                }
+            $records = FinSaida::where('id', $id)->delete();
+            if ($records) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::SUCESSO)
+                    ->message(MensagensRetorno::DELETE_PADRAO)
+                    ->response();
             }
             return MensagensRetorno::make()
                 ->status(MensagensRetorno::ERRO)

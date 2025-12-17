@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\Models\FinInvestimento;
 use App\Utils\MensagensRetorno;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class FinInvestimentoController extends Controller
 {

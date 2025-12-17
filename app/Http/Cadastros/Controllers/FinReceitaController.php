@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Cadastros\Controllers;
 
+use App\Http\Cadastros\Requests\FinReceitaRequest;
 use App\Http\Controllers\Controller;
 use App\Models\FinReceita;
 use App\Utils\MensagensRetorno;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class FinReceitaController extends Controller
 {
@@ -28,14 +28,9 @@ class FinReceitaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(FinReceitaRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'users_id'  => 'required|int|max:100',
-            'valor' => 'required',
-            'data_recebimento' => 'required',
-        ]);
-
+        $validated = $request->validated();
         $records = FinReceita::create($validated);
 
         return MensagensRetorno::make()
@@ -61,14 +56,9 @@ class FinReceitaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, FinReceita $finReceita, int $id): JsonResponse
+    public function update(FinReceitaRequest $request, FinReceita $finReceita, int $id): JsonResponse
     {
-        $validated = $request->validate([
-            'users_id'  => 'required|int|max:100',
-            'valor' => 'required',
-            'data_recebimento' => 'required',
-        ]);
-
+        $validated = $request->validated();
         $records = $finReceita->where('id', $id)->update($validated);
 
         if ($records) {

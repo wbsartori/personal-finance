@@ -8,7 +8,8 @@ use App\Http\Financeiro\Requests\LancamentoInvestimentoRequest;
 use App\Models\FinInvestimento;
 use App\Utils\MensagensRetorno;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class LancamentoInvestimentoController
 {
@@ -17,12 +18,28 @@ class LancamentoInvestimentoController
      */
     public function index(): JsonResponse
     {
-        $records = FinInvestimento::all()->toArray();
-        return MensagensRetorno::make()
-            ->status(MensagensRetorno::SUCESSO)
-            ->message(MensagensRetorno::INDEX_PADRAO)
-            ->data($records)
-            ->response();
+        try {
+            $records = FinInvestimento::all()->toArray();
+            if($records) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::SUCESSO)
+                    ->message(MensagensRetorno::INDEX_PADRAO)
+                    ->data($records)
+                    ->response();
+
+            }
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::SUCESSO)
+                ->message(MensagensRetorno::NENHUM_REGISTRO_ENCONTRADO)
+                ->data($records)
+                ->response();
+        } catch (Throwable $throwable) {
+            Log::error($throwable->getMessage());
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_INTERNO_500)
+                ->response(500);
+        }
     }
 
     /**
@@ -30,33 +47,29 @@ class LancamentoInvestimentoController
      */
     public function store(LancamentoInvestimentoRequest $request): JsonResponse
     {
-        $validated = $request->validated([
-            'users_id' => 'required|integer|exists:users,id',
-            'descricao' => 'nullable|string|max:500',
-            'valor' => 'required|numeric|min:0',
-            'forma_pagamento' => 'required|string|in:PIX,DEB,DIN,BOL,VAL',
-            'tipo_lancamento' => 'required|string|max:255',
-            'numero_parcela' => 'nullable|integer|min:1',
-            'data_vencimento' => 'required|date',
-            'data_pagamento' => 'nullable|date|after_or_equal:data_vencimento',
-            'cartao_credito' => 'nullable|integer',
-            'status' => 'required|string|in:A,P,C',
-        ]);
+        try {
+            $validated = $request->validated();
+            $records = FinInvestimento::create($validated);
 
-        $records = FinInvestimento::create($validated);
-
-        if($records) {
+            if ($records) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::SUCESSO)
+                    ->message(MensagensRetorno::STORE_PADRAO)
+                    ->data([$records])
+                    ->response();
+            }
             return MensagensRetorno::make()
-                ->status(MensagensRetorno::SUCESSO)
-                ->message( MensagensRetorno::STORE_PADRAO)
-                ->data([$records])
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_PADRAO)
+                ->data($records->where('id', $request->id)->get()->toArray())
                 ->response();
+        } catch (Throwable $throwable) {
+            Log::error($throwable->getMessage());
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_INTERNO_500)
+                ->response(500);
         }
-        return MensagensRetorno::make()
-            ->status(MensagensRetorno::ERRO)
-            ->message(MensagensRetorno::ERRO_PADRAO)
-            ->data($records->where('id', $request->id)->get()->toArray())
-            ->response();
     }
 
     /**
@@ -64,46 +77,57 @@ class LancamentoInvestimentoController
      */
     public function show(int $id): JsonResponse
     {
-        $records = FinInvestimento::findOrFail($id)->toArray();
-        return MensagensRetorno::make()
-            ->status(MensagensRetorno::SUCESSO)
-            ->message(MensagensRetorno::SHOW_PADRAO)
-            ->data([$records])
-            ->response();
+        try {
+            $records = FinInvestimento::where('id', $id)->get()->toArray();
+            if ($records) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::SUCESSO)
+                    ->message(MensagensRetorno::SHOW_PADRAO)
+                    ->data($records)
+                    ->response();
+            }
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::SUCESSO)
+                ->message(MensagensRetorno::NENHUM_REGISTRO_ENCONTRADO)
+                ->data($records)
+                ->response();
+        } catch (Throwable $throwable) {
+            Log::error($throwable->getMessage());
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_INTERNO_500)
+                ->response(500);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, FinInvestimento $FinInvestimento, int $id): JsonResponse
+    public function update(LancamentoInvestimentoRequest $request, FinInvestimento $FinInvestimento, int $id): JsonResponse
     {
-        $validated = $request->validate([
-            'users_id' => 'required|integer|exists:users,id',
-            'descricao' => 'nullable|string|max:500',
-            'valor' => 'required|numeric|min:0',
-            'forma_pagamento' => 'required|string|in:PIX,DEB,DIN,BOL,VAL',
-            'tipo_lancamento' => 'required|string|max:255',
-            'numero_parcela' => 'nullable|integer|min:1',
-            'data_vencimento' => 'required|date',
-            'data_pagamento' => 'nullable|date|after_or_equal:data_vencimento',
-            'cartao_credito' => 'nullable|integer',
-            'status' => 'required|string|in:A,P,C',
-        ]);
+        try {
+            $validated = $request->validated();
+            $records = $FinInvestimento->where('id', $id)->update($validated);
 
-        $records = $FinInvestimento->where('id', $id)->update($validated);
-
-        if ($records) {
+            if ($records) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::SUCESSO)
+                    ->message(MensagensRetorno::UPDATE_PADRAO)
+                    ->data($FinInvestimento->where('id', $id)->get()->toArray())
+                    ->response();
+            }
             return MensagensRetorno::make()
-                ->status(MensagensRetorno::SUCESSO)
-                ->message(MensagensRetorno::UPDATE_PADRAO)
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_PADRAO)
                 ->data($FinInvestimento->where('id', $id)->get()->toArray())
                 ->response();
+        } catch (Throwable $throwable) {
+            Log::error($throwable->getMessage());
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_INTERNO_500)
+                ->response(500);
         }
-        return MensagensRetorno::make()
-            ->status(MensagensRetorno::ERRO)
-            ->message(MensagensRetorno::ERRO_PADRAO)
-            ->data($FinInvestimento->where('id', $id)->get()->toArray())
-            ->response();
     }
 
     /**
@@ -111,8 +135,13 @@ class LancamentoInvestimentoController
      */
     public function destroy(int $id): JsonResponse
     {
-        $FinInvestimento = FinInvestimento::where('id', $id)->exists();
-        if ($FinInvestimento) {
+        try {
+            if (!FinInvestimento::where('id', $id)->exists()) {
+                return MensagensRetorno::make()
+                    ->status(MensagensRetorno::ERRO)
+                    ->message("O id do investimento {$id} não foi encontrado")
+                    ->response();
+            }
             $records = FinInvestimento::where('id', $id)->delete();
 
             if ($records) {
@@ -121,10 +150,16 @@ class LancamentoInvestimentoController
                     ->message(MensagensRetorno::DELETE_PADRAO)
                     ->response();
             }
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_PADRAO)
+                ->response();
+        } catch (Throwable $throwable) {
+            Log::error($throwable->getMessage());
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::ERRO)
+                ->message(MensagensRetorno::ERRO_INTERNO_500)
+                ->response(500);
         }
-        return MensagensRetorno::make()
-            ->status(MensagensRetorno::ERRO)
-            ->message(MensagensRetorno::ERRO_PADRAO)
-            ->response();
     }
 }
