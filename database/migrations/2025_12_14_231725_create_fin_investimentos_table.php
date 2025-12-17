@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('fin_investimentos', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
+            $table->unsignedBigInteger('users_id');
+            $table->date('data_investimento');
+            $table->string('tipo_investimento')->default('A')->nullable(); // Classe Enum TipoInvestimento
+            $table->string('descricao')->nullable();
+            $table->string('fonte_investimento');
+            $table->decimal('valor', 15)->default(0);
             $table->timestamps();
         });
     }

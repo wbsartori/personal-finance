@@ -11,18 +11,13 @@ class FinEntrada extends Model
 
     protected $fillable = [
         'users_id',
-        'observacoes',
+        'descricao',
         'valor',
         'forma_pagamento',
         'tipo_lancamento',
-        'tipo_investimento',
         'numero_parcela',
         'data_vencimento',
         'data_pagamento',
-        'data_investimento',
-        'cartao_credito',
         'status',
-        'mes',
-        'ano',
     ];
 }

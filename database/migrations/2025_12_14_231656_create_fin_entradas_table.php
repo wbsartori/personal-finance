@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('fin_entradas', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('users_id');
-            $table->string('observacoes')->nullable();
+            $table->string('descricao')->nullable();
             $table->decimal('valor', 15)->default(0);
             $table->string('forma_pagamento')->default('DEB'); //Classe Enum FormaPagamento
             $table->string('tipo_lancamento')->default('A')->nullable(); // Classe Enum TipoLancamento

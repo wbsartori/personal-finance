@@ -12,6 +12,8 @@ class MensagensRetorno implements MensagensRetornoInterface
     public const UPDATE_PADRAO = 'Registro atualizado com sucesso';
     public const DELETE_PADRAO = 'Registro excluído com sucesso';
     public const ERRO_PADRAO = 'Ocorreu um erro ao tentar executar esta operação';
+    public const NENHUM_REGISTRO_ENCONTRADO = 'Nenhum registro encontrado';
+    public const ERRO_INTERNO_500 = 'Ocorreu um erro interno na aplicação';
     public const CUSTOMIZADA = '%s';
     public const SUCESSO = 'sucesso';
     public const ERRO = 'erro';

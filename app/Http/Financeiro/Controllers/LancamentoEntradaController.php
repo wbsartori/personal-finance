@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Financeiro;
+namespace App\Http\Financeiro\Controllers;
 
+use App\Http\Financeiro\Requests\LancamentoEntradaRequest;
 use App\Models\FinEntrada;
 use App\Utils\MensagensRetorno;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class LancamentoEntradaController
 {
@@ -27,29 +27,16 @@ class LancamentoEntradaController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(LancamentoEntradaRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'users_id' => 'required|integer|exists:users,id',
-            'observacoes' => 'nullable|string|max:500',
-            'valor' => 'required|numeric|min:0',
-            'forma_pagamento' => 'required|string|in:PIX,DEB,DIN,BOL,VAL',
-            'tipo_lancamento' => 'required|string|max:255',
-            'tipo_investimento' => 'nullable|string|in:A,R,D',
-            'numero_parcela' => 'nullable|integer|min:1',
-            'data_vencimento' => 'required|date',
-            'data_pagamento' => 'nullable|date|after_or_equal:data_vencimento',
-            'data_investimento' => 'nullable|date',
-            'cartao_credito' => 'nullable|integer',
-            'status' => 'required|string|in:A,R,P',
-        ]);
+        $validated = $request->validated();
 
         $records = FinEntrada::create($validated);
 
         if($records) {
             return MensagensRetorno::make()
                 ->status(MensagensRetorno::SUCESSO)
-                ->message('cartões', MensagensRetorno::STORE_PADRAO)
+                ->message(MensagensRetorno::STORE_PADRAO)
                 ->data([$records])
                 ->response();
         }
@@ -68,7 +55,7 @@ class LancamentoEntradaController
         $records = FinEntrada::findOrFail($id)->toArray();
         return MensagensRetorno::make()
             ->status(MensagensRetorno::SUCESSO)
-            ->message('cartões', MensagensRetorno::SHOW_PADRAO)
+            ->message(MensagensRetorno::SHOW_PADRAO)
             ->data([$records])
             ->response();
     }
@@ -76,29 +63,16 @@ class LancamentoEntradaController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, FinEntrada $finEntrada, int $id): JsonResponse
+    public function update(LancamentoEntradaRequest $request, FinEntrada $finEntrada, int $id): JsonResponse
     {
-        $validated = $request->validate([
-            'users_id' => 'required|integer|exists:users,id',
-            'observacoes' => 'nullable|string|max:500',
-            'valor' => 'required|numeric|min:0',
-            'forma_pagamento' => 'required|string|in:PIX,DEB,DIN,BOL,VAL',
-            'tipo_lancamento' => 'required|string|max:255',
-            'tipo_investimento' => 'nullable|string|in:A,R,D',
-            'numero_parcela' => 'nullable|integer|min:1',
-            'data_vencimento' => 'required|date',
-            'data_pagamento' => 'nullable|date|after_or_equal:data_vencimento',
-            'data_investimento' => 'nullable|date',
-            'cartao_credito' => 'nullable|integer',
-            'status' => 'required|string|in:A,R,P',
-        ]);
+        $validated = $request->validated();
 
         $records = $finEntrada->where('id', $id)->update($validated);
 
         if ($records) {
             return MensagensRetorno::make()
                 ->status(MensagensRetorno::SUCESSO)
-                ->message('cartões', MensagensRetorno::UPDATE_PADRAO)
+                ->message(MensagensRetorno::UPDATE_PADRAO)
                 ->data($finEntrada->where('id', $id)->get()->toArray())
                 ->response();
         }

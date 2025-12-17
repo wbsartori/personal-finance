@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Cadastros\Controllers;
 
+use App\Http\Cadastros\Requests\FinCartaoRequest;
 use App\Http\Controllers\Controller;
 use App\Models\FinCartao;
 use App\Utils\MensagensRetorno;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class FinCartaoController extends Controller
 {
@@ -20,7 +20,7 @@ class FinCartaoController extends Controller
         $records = FinCartao::all()->toArray();
         return MensagensRetorno::make()
             ->status(MensagensRetorno::SUCESSO)
-            ->message('cartões', MensagensRetorno::INDEX_PADRAO)
+            ->message(MensagensRetorno::INDEX_PADRAO)
             ->data($records)
             ->response();
     }
@@ -28,18 +28,22 @@ class FinCartaoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(FinCartaoRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'nome' => 'required|string|max:100',
-        ]);
-
+        $validated = $request->validated();
         $records = FinCartao::create($validated);
 
+        if ($records) {
+            return MensagensRetorno::make()
+                ->status(MensagensRetorno::SUCESSO)
+                ->message(MensagensRetorno::STORE_PADRAO)
+                ->data([$records])
+                ->response();
+        }
         return MensagensRetorno::make()
-            ->status(MensagensRetorno::SUCESSO)
-            ->message('cartões', MensagensRetorno::STORE_PADRAO)
-            ->data([$records])
+            ->status(MensagensRetorno::ERRO)
+            ->message(MensagensRetorno::ERRO_PADRAO)
+            ->data($records->where('id', $request->id)->get()->toArray())
             ->response();
     }
 
@@ -51,7 +55,7 @@ class FinCartaoController extends Controller
         $records = FinCartao::findOrFail($id)->toArray();
         return MensagensRetorno::make()
             ->status(MensagensRetorno::SUCESSO)
-            ->message('cartões', MensagensRetorno::SHOW_PADRAO)
+            ->message(MensagensRetorno::SHOW_PADRAO)
             ->data([$records])
             ->response();
     }
@@ -59,18 +63,15 @@ class FinCartaoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, FinCartao $finCartao, int $id): JsonResponse
+    public function update(FinCartaoRequest $request, FinCartao $finCartao, int $id): JsonResponse
     {
-        $validated = $request->validate([
-            'nome' => 'required|string|max:100',
-        ]);
-
+        $validated = $request->validated();
         $records = $finCartao->where('id', $id)->update($validated);
 
         if ($records) {
             return MensagensRetorno::make()
                 ->status(MensagensRetorno::SUCESSO)
-                ->message('cartões', MensagensRetorno::UPDATE_PADRAO)
+                ->message(MensagensRetorno::UPDATE_PADRAO)
                 ->data($finCartao->where('id', $id)->get()->toArray())
                 ->response();
         }

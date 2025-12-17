@@ -14,17 +14,15 @@ return new class extends Migration
         Schema::create('fin_saidas', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('users_id');
-            $table->string('observacoes')->nullable();
-            $table->decimal('valor', 15)->nullable();
-            $table->string('forma_pagamento')->default('D'); //D - Debito
-            $table->string('tipo_lancamento')->default('A')->nullable(); // A - avista, R - recorrente ou P - parcelado
-            $table->string('numero_parcela')->nullable();
+            $table->string('descricao')->nullable();
+            $table->decimal('valor', 15)->default(0);
+            $table->string('forma_pagamento')->default('DEB'); //Classe Enum FormaPagamento
+            $table->string('tipo_lancamento')->default('A')->nullable(); // Classe Enum TipoLancamento
+            $table->string('numero_parcela')->default(0)->nullable();
             $table->string('cartao_credito')->nullable();
             $table->date('data_vencimento');
             $table->date('data_pagamento')->nullable();
-            $table->string('status')->default('P'); // P - Previsto, A - Atrasado ou C - Concluido
-            $table->string('mes');
-            $table->string('ano');
+            $table->string('status')->default('P'); // Classe Enum StatusSaida
             $table->timestamps();
         });
     }

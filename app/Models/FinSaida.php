@@ -11,7 +11,7 @@ class FinSaida extends Model
 
     protected $fillable = [
         'users_id',
-        'observacoes',
+        'descricao',
         'valor',
         'forma_pagamento',
         'tipo_lancamento',
@@ -19,7 +19,5 @@ class FinSaida extends Model
         'data_vencimento',
         'data_pagamento',
         'status',
-        'mes',
-        'ano',
     ];
 }
