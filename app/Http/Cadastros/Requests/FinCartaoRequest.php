@@ -43,7 +43,7 @@ class FinCartaoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'descricao.required' => 'O descrição é obrigatório.',
+            'descricao.required' => 'O campo descrição é obrigatório.',
             'descricao.string' => 'A descrição deve ser um texto.',
             'descricao.max' => 'A descrição pode ter no máximo 100 caracteres.',
         ];

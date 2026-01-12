@@ -12,5 +12,5 @@ class FinCartao extends Model
 
     protected $table = 'fin_cartoes';
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['descricao'];
 }

@@ -57,4 +57,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(History::class);
     }
+
+    public function finReceitas(): HasMany {
+        return $this->hasMany(FinReceita::class);
+    }
 }

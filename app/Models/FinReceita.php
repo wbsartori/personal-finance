@@ -9,5 +9,10 @@ class FinReceita extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['users_id', 'valor', 'data_recebimento'];
+    protected $fillable = ['users_id', 'descricao', 'valor', 'data_recebimento'];
+
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

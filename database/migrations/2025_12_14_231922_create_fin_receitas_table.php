@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('fin_receitas', function (Blueprint $table) {
             $table->id();
             $table->unsignedSmallInteger('users_id');
+            $table->string('descricao');
             $table->decimal('valor', 15 );
             $table->date('data_recebimento');
+            $table->foreign('users_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

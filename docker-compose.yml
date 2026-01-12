@@ -19,6 +19,7 @@ services:
             - ./logs/nginx/:/var/log/nginx
             - ./database:/var/www/database
         user: "1000:1000"
+
     nginx:
         build:
             context: docker/nginx
@@ -35,4 +36,40 @@ services:
         volumes:
             - ./:/var/www
             - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+    postgres:
+        image: postgres:16-alpine
+        container_name: postgres_db
+        restart: always
+        environment:
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD: admin123
+            POSTGRES_DB: personal_finance
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./database/postgres_data:/var/lib/postgresql/data
+        networks:
+            - personal-finance
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -U admin" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: pgadmin
+        restart: always
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com.br
+            PGADMIN_DEFAULT_PASSWORD: admin
+        ports:
+            - "8080:81"
+        depends_on:
+            - postgres
+        volumes:
+            - ./database/pgadmin_data:/var/lib/pgadmin
+        networks:
+            - personal-finance
 

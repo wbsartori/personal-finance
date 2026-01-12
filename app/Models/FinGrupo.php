@@ -9,5 +9,5 @@ class FinGrupo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['descricao'];
 }
