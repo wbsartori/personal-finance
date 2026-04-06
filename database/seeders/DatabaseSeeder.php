@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeed::class,
+            GrupoSeed::class,
+            FinCartaoSeed::class,
         ]);
     }
 }

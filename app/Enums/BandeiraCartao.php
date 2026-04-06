@@ -7,11 +7,10 @@ namespace App\Enums;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Foundation\Application;
 
-Enum StatusEntrada: string
+Enum BandeiraCartao: string
 {
-    case PAGAMENTO_PREVISTO = 'PP';
-    case PAGAMENTO_ATRASADO = 'PA';
-    case PAGAMENTO_CONCLUIDO = 'PC';
+    case MASTERCARD = 'MC';
+    case VISA = 'VI';
 
 
     /**
@@ -20,9 +19,8 @@ Enum StatusEntrada: string
     public function toName(): Application|array|string|Translator|\Illuminate\Contracts\Foundation\Application|null
     {
         return match ($this) {
-            self::PAGAMENTO_PREVISTO => __('Pagamento Previsto'),
-            self::PAGAMENTO_ATRASADO => __('Pagamento Atrasado'),
-            self::PAGAMENTO_CONCLUIDO => __('Pagamento Concluido'),
+            self::MASTERCARD => __('Mastercard'),
+            self::VISA => __('Visa'),
         };
     }
 }

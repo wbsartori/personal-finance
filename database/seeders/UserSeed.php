@@ -16,9 +16,27 @@ class UserSeed extends Seeder
     {
         User::create([
             'id' => 1,
-            'name' => 'Usuario teste',
-            'email' => 'usuario_teste@email.com',
-            'password' => password_hash('123456', PASSWORD_DEFAULT),
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'password' => password_hash('123', PASSWORD_DEFAULT),
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        ]);
+
+        User::create([
+            'id' => 2,
+            'name' => 'Maria da Silva',
+            'email' => 'maria.silva@admin.com',
+            'password' => password_hash('123', PASSWORD_DEFAULT),
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        ]);
+
+        User::create([
+            'id' => 3,
+            'name' => 'Joao da Silva',
+            'email' => 'joao.silva@admin.com',
+            'password' => password_hash('123', PASSWORD_DEFAULT),
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);

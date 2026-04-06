@@ -61,4 +61,18 @@ class User extends Authenticatable
     public function finReceitas(): HasMany {
         return $this->hasMany(FinReceita::class);
     }
+
+    public function finEntradas()
+    {
+        return $this->hasMany(FinEntrada::class);
+    }
+
+    public function finInvestimentos()
+    {
+        return $this->hasMany(FinInvestimento::class);
+    }
+
+    public function finCartaos() {
+        return $this->hasMany(FinCartao::class);
+    }
 }

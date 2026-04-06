@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\FinReceitas\Tables;
+namespace App\Filament\Resources\FinSubGrupos\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -9,20 +9,16 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class FinReceitasTable
+class FinSubGruposTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('id')->label('ID'),
-                TextColumn::make('users.name')
-                    ->sortable(),
-                TextColumn::make('valor')
-                    ->money('BRL')
-                    ->sortable(),
-                TextColumn::make('data_recebimento')
-                    ->date()
+                TextColumn::make('descricao')
+                    ->searchable(),
+                TextColumn::make('finGrupo.descricao')
+                    ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -39,6 +35,11 @@ class FinReceitasTable
             ->recordActions([
                 EditAction::make()->label(''),
                 DeleteAction::make()->label(''),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 }

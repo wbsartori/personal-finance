@@ -20,6 +20,7 @@ class FinCartaoRequest extends FormRequest
     {
         return [
             'descricao' => 'descrição',
+            'limite' => 'limite',
         ];
     }
 
@@ -32,6 +33,7 @@ class FinCartaoRequest extends FormRequest
     {
         return [
             'descricao' => 'required|string|max:100',
+            'limite' => 'required',
         ];
     }
 
@@ -46,6 +48,7 @@ class FinCartaoRequest extends FormRequest
             'descricao.required' => 'O campo descrição é obrigatório.',
             'descricao.string' => 'A descrição deve ser um texto.',
             'descricao.max' => 'A descrição pode ter no máximo 100 caracteres.',
+            'limite.required' => 'O campo limite é obrigatório.',
         ];
     }
 }

@@ -12,7 +12,9 @@ class History extends Model
 
     protected $fillable = [
         'user_id',
-        'output_id',
+        'fin_entrada_id',
+        'fin_saida_id',
+        'fin_receita_id',
         'people_id',
         'description',
         'type',

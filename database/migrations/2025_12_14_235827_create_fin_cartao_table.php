@@ -14,6 +14,11 @@ return new class extends Migration
         Schema::create('fin_cartoes', function (Blueprint $table) {
             $table->id();
             $table->string('descricao');
+            $table->bigInteger('limite_uso')->default('0');
+            $table->bigInteger('limite_real')->default('0');
+            $table->string('dia_vencimento')->default('10');
+            $table->string('bandeira')->nullable();
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('descricao')->nullable();
             $table->string('fonte_investimento');
             $table->decimal('valor', 15)->default(0);
+            $table->foreign('users_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

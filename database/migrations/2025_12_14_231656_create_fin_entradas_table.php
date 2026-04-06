@@ -15,13 +15,14 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('users_id');
             $table->string('descricao')->nullable();
-            $table->decimal('valor', 15)->default(0);
+            $table->bigInteger('valor')->default(0);
             $table->string('forma_pagamento')->default('DEB'); //Classe Enum FormaPagamento
             $table->string('tipo_lancamento')->default('A')->nullable(); // Classe Enum TipoLancamento
-            $table->string('numero_parcela')->default(0)->nullable();
+            $table->integer('numero_parcela')->default(0)->nullable();
             $table->date('data_vencimento');
             $table->date('data_pagamento')->nullable();
             $table->string('status')->default('P'); // Classe Enum Status
+            $table->foreign('users_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
