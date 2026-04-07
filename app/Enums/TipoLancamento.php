@@ -13,6 +13,14 @@ Enum TipoLancamento: string
     case RECORRENTE = 'R';
     case PARCELADO = 'P';
 
+    public static function toOptions(): array
+    {
+        return array_reduce(self::cases(), function ($status, $item) {
+            $status[$item->value] = $item->toName();
+            return $status;
+        }, []);
+    }
+
     /**
      * @return Application|array|string|Translator|\Illuminate\Contracts\Foundation\Application|null
      */

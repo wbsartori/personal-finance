@@ -16,6 +16,13 @@ Enum FormaPagamento: string
     case BOLETO = 'BOL';
     case VALE_ALIMENTACAO = 'VAL';
 
+    public static function toOptions(): array
+    {
+        return array_reduce(self::cases(), function ($status, $item) {
+            $status[$item->value] = $item->toName();
+            return $status;
+        }, []);
+    }
 
     /**
      * @return array|\Illuminate\Contracts\Foundation\Application|Translator|Application|string|null

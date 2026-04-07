@@ -20,4 +20,9 @@ class FinEntrada extends Model
         'data_pagamento',
         'status',
     ];
+
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

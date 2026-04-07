@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\FinEntradas\Pages;
 
+
+use App\Filament\Resources\FinEntradas\Actions\Entrada\FormLancarEntrada;
 use App\Filament\Resources\FinEntradas\FinEntradaResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListFinEntradas extends ListRecords
@@ -13,7 +14,7 @@ class ListFinEntradas extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->label('Nova Entrada'),
+            FormLancarEntrada::render()
         ];
     }
 }

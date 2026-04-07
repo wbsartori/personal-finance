@@ -104,6 +104,13 @@ class GrupoSeed extends Seeder
                     'Reserva de emergência',
                 ],
             ],
+            [
+                'descricao' => 'Receita',
+                'subgrupos' => [
+                    'Salário',
+                    'Prestação de Serviço',
+                ],
+            ],
         ];
 
         foreach ($grupos as $grupo) {
