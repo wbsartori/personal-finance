@@ -4,14 +4,17 @@ namespace App\Filament\Resources\FinEntradas\Tables;
 
 use App\Enums\StatusEntrada;
 use App\Enums\TipoLancamento;
-use App\Models\User;
+use App\Filament\Resources\FinEntradas\Actions\Entrada\Acoes\AcaoConcluirEntrada;
+use App\Filament\Resources\FinEntradas\Actions\Entrada\Acoes\AcaoReverterEntrada;
+use App\Models\FinEntrada;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Log;
 
 class FinEntradasTable
 {
@@ -32,8 +35,13 @@ class FinEntradasTable
                         StatusEntrada::PAGAMENTO_CONCLUIDO->value => StatusEntrada::PAGAMENTO_CONCLUIDO->toName(),
                     })
                     ->badge(fn ($state) => match ($state) {
-                        StatusEntrada::PAGAMENTO_PREVISTO->value => 'success',
-                        StatusEntrada::PAGAMENTO_ATRASADO->value => 'warning',
+                        StatusEntrada::PAGAMENTO_PREVISTO->value => 'info',
+                        StatusEntrada::PAGAMENTO_ATRASADO->value => 'danger',
+                        StatusEntrada::PAGAMENTO_CONCLUIDO->value => 'success',
+                    })
+                    ->color(fn ($state) => match ($state) {
+                        StatusEntrada::PAGAMENTO_PREVISTO->value => 'info',
+                        StatusEntrada::PAGAMENTO_ATRASADO->value => 'danger',
                         StatusEntrada::PAGAMENTO_CONCLUIDO->value => 'success',
                     })
                     ->searchable(),
@@ -45,14 +53,15 @@ class FinEntradasTable
                         TipoLancamento::PARCELADO->value => TipoLancamento::PARCELADO->toName(),
                     })
                     ->badge(fn ($state) => match ($state) {
-                        TipoLancamento::AVISTA->value => 'success',
-                        TipoLancamento::RECORRENTE->value => 'warning',
+                        TipoLancamento::AVISTA->value => 'info',
+                        TipoLancamento::RECORRENTE->value => 'danger',
                         TipoLancamento::PARCELADO->value => 'success',
                     })
                     ->searchable(),
-                TextColumn::make('numero_parcela')->searchable(),
+                TextColumn::make('numero_parcela')
+                    ->searchable(),
                 TextColumn::make('data_vencimento')->date('d/m/Y')->sortable(),
-                TextColumn::make('data_pagamento')->date()->sortable(),
+                TextColumn::make('data_pagamento')->date('d/m/Y')->sortable(),
 
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -63,12 +72,58 @@ class FinEntradasTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+//            ->recordClasses(fn($record) => match ($record->status) {
+//                StatusEntrada::PAGAMENTO_PREVISTO->value => 'bg-green-50',
+//                StatusEntrada::PAGAMENTO_ATRASADO->value =>'bg-yellow-50',
+//                StatusEntrada::PAGAMENTO_CONCLUIDO->value =>'bg-blue-50',
+//            })
             ->filters([
                 //
             ])
             ->recordActions([
                 EditAction::make()->label(''),
                 DeleteAction::make()->label(''),
+                Action::make('finalizar-entrada')
+                    ->label('')
+                    ->icon('heroicon-o-check')
+                    ->action(function (FinEntrada $finEntrada): void {
+                        $entrada = (new AcaoConcluirEntrada())
+                            ->executar($finEntrada->toArray());
+                        $mensagemRetorno = $entrada->getData(true);
+                        if($mensagemRetorno['status'] == 'success') {
+                            Notification::make()
+                                ->success()
+                                ->body($mensagemRetorno['message'])
+                                ->send();
+                            return;
+                        }
+                        Notification::make()
+                            ->danger()
+                            ->body($mensagemRetorno['message'])
+                            ->send();
+                        return;
+                })->requiresConfirmation()->modalHeading('Finalizar Entrada'),
+                Action::make('reverter-entrada')
+                    ->label('')
+                    ->color('danger')
+                    ->icon('heroicon-o-arrow-uturn-left')
+                    ->action(function (FinEntrada $finEntrada): void {
+                        $entrada = (new AcaoReverterEntrada())
+                            ->executar($finEntrada->toArray());
+                        $mensagemRetorno = $entrada->getData(true);
+                        if($mensagemRetorno['status'] == 'success') {
+                            Notification::make()
+                                ->success()
+                                ->body($mensagemRetorno['message'])
+                                ->send();
+                            return;
+                        }
+                        Notification::make()
+                            ->danger()
+                            ->body($mensagemRetorno['message'])
+                            ->send();
+                        return;
+                    })->requiresConfirmation()->modalHeading('Reverter Entrada'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

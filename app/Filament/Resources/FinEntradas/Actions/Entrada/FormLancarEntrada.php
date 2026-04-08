@@ -5,6 +5,7 @@ namespace App\Filament\Resources\FinEntradas\Actions\Entrada;
 use App\Enums\FormaPagamento;
 use App\Enums\StatusEntrada;
 use App\Enums\TipoLancamento;
+use App\Filament\Resources\FinEntradas\Actions\Entrada\Acoes\AcaoLancarEntrada;
 use App\Models\FinGrupo;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -36,9 +37,11 @@ class FormLancarEntrada
                         ->numeric()
                         ->default(0),
                     Select::make('forma_pagamento')->options(FormaPagamento::toOptions())->default(FormaPagamento::DEBITO->value),
-                    Select::make('tipo_lancamento')->options(TipoLancamento::toOptions())->default(TipoLancamento::AVISTA->value),
-                    Select::make('fin_grupos_id')->options(FinGrupo::all()->pluck('descricao', 'id'))->label('Grupo'),
+                    Select::make('tipo_lancamento')
+                        ->hint('Quando o Tipo de lançamento for parcelado ou recorrente o número de parcelas deve ser informado')
+                        ->options(TipoLancamento::toOptions())->default(TipoLancamento::AVISTA->value),
                     TextInput::make('numero_parcela')->default('1')->numeric(),
+                    Select::make('fin_grupos_id')->options(FinGrupo::all()->pluck('descricao', 'id'))->label('Grupo'),
                     DatePicker::make('data_vencimento')
                         ->suffixAction(
                             Action::make('limpar-data-pagamento')->action(function (Set $set) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\FinEntradas\Actions\Entrada;
+namespace App\Filament\Resources\FinEntradas\Actions\Entrada\Acoes;
 
 use App\Enums\TipoLancamento;
 use App\Models\FinEntrada;
