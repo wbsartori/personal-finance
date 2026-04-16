@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\FinEntradas\Schemas;
 
 use App\Enums\FormaPagamento;
-use App\Enums\StatusEntrada;
+use App\Enums\StatusPagamento;
 use App\Enums\TipoLancamento;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
@@ -45,7 +45,7 @@ class FinEntradaForm
                     DatePicker::make('data_pagamento'),
                     Radio::make('status')
                         ->inline()
-                        ->options(StatusEntrada::toOptions())
+                        ->options(StatusPagamento::toOptions())
                         ->required()
                         ->default('P'),
                 ])->columnSpanFull()

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\FinEntradas\Actions\Entrada;
+namespace App\Filament\Resources\FinSaidas\Actions\Saida;
 
 use App\Enums\FormaPagamento;
 use App\Enums\StatusPagamento;
 use App\Enums\TipoLancamento;
-use App\Filament\Resources\FinEntradas\Actions\Entrada\Acoes\AcaoLancarEntrada;
+use App\Filament\Resources\FinSaidas\Actions\Saida\Acoes\AcaoLancarSaida;
+use App\Models\FinCartao;
 use App\Models\FinGrupo;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -14,22 +15,23 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Support\Icons\Heroicon;
 
-class FormLancarEntrada
+class FormLancarSaida
 {
     public static function render()
     {
-        return Action::make('lancar-entrada')->label('Lançar Entrada')
+        return Action::make('lancar-entrada')->label('Lançar Saida')
             ->modal()
-            ->modalHeading('Lançar Nova Entrada')
+            ->modalHeading('Lançar Nova Saida')
             ->modalSubmitActionLabel('Lançar')
             ->closeModalByClickingAway(false)
             ->schema([
                 Section::make()->schema([
                     Select::make('users_id')
-                        ->label('Responsável da entrada')
+                        ->label('Responsável da saída')
                         ->options(User::all()->pluck('name', 'id'))->default(auth()->id()),
                     TextInput::make('descricao')->label('Descrição')->required(),
                     TextInput::make('valor')
@@ -37,6 +39,11 @@ class FormLancarEntrada
                         ->numeric()
                         ->default(0),
                     Select::make('forma_pagamento')->options(FormaPagamento::toOptions())->default(FormaPagamento::DEBITO->value),
+                    Select::make('fin_cartoes_id')
+                        ->options(FinCartao::all()->pluck('descricao', 'id'))
+                        ->label('Cartão de crédito')
+                        ->lazy()
+                        ->reactive(),
                     Select::make('tipo_lancamento')
                         ->hint('Quando o Tipo de lançamento for parcelado ou recorrente o número de parcelas deve ser informado')
                         ->options(TipoLancamento::toOptions())->default(TipoLancamento::AVISTA->value),
@@ -58,7 +65,7 @@ class FormLancarEntrada
                     Radio::make('status')->options(StatusPagamento::toOptions())->default('PP')->inline()
                 ])
             ])->action(function (array $data) {
-                (new AcaoLancarEntrada())->executar($data);
+                (new AcaoLancarSaida())->executar($data);
             });
     }
 }

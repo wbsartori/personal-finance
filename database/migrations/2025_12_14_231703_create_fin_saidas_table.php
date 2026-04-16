@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('forma_pagamento')->default('DEB'); //Classe Enum FormaPagamento
             $table->string('tipo_lancamento')->default('A')->nullable(); // Classe Enum TipoLancamento
             $table->integer('numero_parcela')->default(0)->nullable();
-            $table->string('cartao_credito')->nullable();
+            $table->string('fin_cartoes_id')->nullable();
             $table->date('data_vencimento');
             $table->date('data_pagamento')->nullable();
             $table->string('status')->default('P'); // Classe Enum StatusSaida

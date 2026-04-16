@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\FinEntradas\Actions\Entrada\Acoes;
+namespace App\Filament\Resources\FinSaidas\Actions\Saida\Acoes;
 
 use App\Enums\StatusPagamento;
 use App\Models\FinEntrada;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class AcaoReverterEntrada
+class AcaoReverterSaida
 {
     public function executar(array $data)
     {

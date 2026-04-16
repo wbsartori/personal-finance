@@ -19,5 +19,11 @@ class FinSaida extends Model
         'data_vencimento',
         'data_pagamento',
         'status',
+        'fin_cartoes_id',
     ];
+
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

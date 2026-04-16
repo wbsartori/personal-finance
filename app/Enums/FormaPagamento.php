@@ -15,6 +15,7 @@ Enum FormaPagamento: string
     case DEPOSITO = 'DEP';
     case BOLETO = 'BOL';
     case VALE_ALIMENTACAO = 'VAL';
+    case CARTAO_CREDITO = 'CRED';
 
     public static function toOptions(): array
     {
@@ -36,6 +37,7 @@ Enum FormaPagamento: string
             self::DEPOSITO => __('Depósito'),
             self::BOLETO => __('Boleto'),
             self::VALE_ALIMENTACAO => __('Vale Alimentação'),
+            self::CARTAO_CREDITO => __('Cartão de Crédito'),
         };
     }
 }

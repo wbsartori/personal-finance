@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\FinEntradas\Tables;
 
-use App\Enums\StatusEntrada;
+use App\Enums\StatusPagamento;
 use App\Enums\TipoLancamento;
 use App\Filament\Resources\FinEntradas\Actions\Entrada\Acoes\AcaoConcluirEntrada;
 use App\Filament\Resources\FinEntradas\Actions\Entrada\Acoes\AcaoReverterEntrada;
@@ -30,19 +30,19 @@ class FinEntradasTable
                 TextColumn::make('status')
                     ->alignCenter()
                     ->formatStateUsing(fn ($state) => match ($state) {
-                        StatusEntrada::PAGAMENTO_PREVISTO->value => StatusEntrada::PAGAMENTO_PREVISTO->toName(),
-                        StatusEntrada::PAGAMENTO_ATRASADO->value => StatusEntrada::PAGAMENTO_ATRASADO->toName(),
-                        StatusEntrada::PAGAMENTO_CONCLUIDO->value => StatusEntrada::PAGAMENTO_CONCLUIDO->toName(),
+                        StatusPagamento::PAGAMENTO_PREVISTO->value => StatusPagamento::PAGAMENTO_PREVISTO->toName(),
+                        StatusPagamento::PAGAMENTO_ATRASADO->value => StatusPagamento::PAGAMENTO_ATRASADO->toName(),
+                        StatusPagamento::PAGAMENTO_CONCLUIDO->value => StatusPagamento::PAGAMENTO_CONCLUIDO->toName(),
                     })
                     ->badge(fn ($state) => match ($state) {
-                        StatusEntrada::PAGAMENTO_PREVISTO->value => 'info',
-                        StatusEntrada::PAGAMENTO_ATRASADO->value => 'danger',
-                        StatusEntrada::PAGAMENTO_CONCLUIDO->value => 'success',
+                        StatusPagamento::PAGAMENTO_PREVISTO->value => 'info',
+                        StatusPagamento::PAGAMENTO_ATRASADO->value => 'danger',
+                        StatusPagamento::PAGAMENTO_CONCLUIDO->value => 'success',
                     })
                     ->color(fn ($state) => match ($state) {
-                        StatusEntrada::PAGAMENTO_PREVISTO->value => 'info',
-                        StatusEntrada::PAGAMENTO_ATRASADO->value => 'danger',
-                        StatusEntrada::PAGAMENTO_CONCLUIDO->value => 'success',
+                        StatusPagamento::PAGAMENTO_PREVISTO->value => 'info',
+                        StatusPagamento::PAGAMENTO_ATRASADO->value => 'danger',
+                        StatusPagamento::PAGAMENTO_CONCLUIDO->value => 'success',
                     })
                     ->searchable(),
                 TextColumn::make('valor')->numeric()->money('BRL' )->sortable(),
@@ -73,9 +73,9 @@ class FinEntradasTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
 //            ->recordClasses(fn($record) => match ($record->status) {
-//                StatusEntrada::PAGAMENTO_PREVISTO->value => 'bg-green-50',
-//                StatusEntrada::PAGAMENTO_ATRASADO->value =>'bg-yellow-50',
-//                StatusEntrada::PAGAMENTO_CONCLUIDO->value =>'bg-blue-50',
+//                StatusPagamento::PAGAMENTO_PREVISTO->value => 'bg-green-50',
+//                StatusPagamento::PAGAMENTO_ATRASADO->value =>'bg-yellow-50',
+//                StatusPagamento::PAGAMENTO_CONCLUIDO->value =>'bg-blue-50',
 //            })
             ->filters([
                 //
@@ -102,7 +102,7 @@ class FinEntradasTable
                             ->body($mensagemRetorno['message'])
                             ->send();
                         return;
-                })->requiresConfirmation()->modalHeading('Finalizar Entrada'),
+                })->requiresConfirmation()->modalHeading('Finalizar Saida'),
                 Action::make('reverter-entrada')
                     ->label('')
                     ->color('danger')
@@ -123,7 +123,7 @@ class FinEntradasTable
                             ->body($mensagemRetorno['message'])
                             ->send();
                         return;
-                    })->requiresConfirmation()->modalHeading('Reverter Entrada'),
+                    })->requiresConfirmation()->modalHeading('Reverter Saida'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

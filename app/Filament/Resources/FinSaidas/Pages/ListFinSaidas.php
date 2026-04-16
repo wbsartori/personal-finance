@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\FinSaidas\Pages;
 
+use App\Filament\Resources\FinSaidas\Actions\Saida\FormLancarSaida;
 use App\Filament\Resources\FinSaidas\FinSaidaResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -13,7 +14,7 @@ class ListFinSaidas extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            FormLancarSaida::render(),
         ];
     }
 }

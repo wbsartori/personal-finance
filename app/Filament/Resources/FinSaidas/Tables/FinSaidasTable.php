@@ -14,7 +14,7 @@ class FinSaidasTable
     {
         return $table
             ->columns([
-                TextColumn::make('users_id')
+                TextColumn::make('users.name')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('descricao')
