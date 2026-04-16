@@ -102,7 +102,7 @@ class FinEntradasTable
                             ->body($mensagemRetorno['message'])
                             ->send();
                         return;
-                })->requiresConfirmation()->modalHeading('Finalizar Saida'),
+                })->requiresConfirmation()->modalHeading('Finalizar Entrada'),
                 Action::make('reverter-entrada')
                     ->label('')
                     ->color('danger')
@@ -123,7 +123,7 @@ class FinEntradasTable
                             ->body($mensagemRetorno['message'])
                             ->send();
                         return;
-                    })->requiresConfirmation()->modalHeading('Reverter Saida'),
+                    })->requiresConfirmation()->modalHeading('Reverter Entrada'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
