@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\FinInvestimentos\Pages;
 
+use App\Filament\Resources\FinInvestimentos\Actions\Investimento\FormLancarInvestimento;
 use App\Filament\Resources\FinInvestimentos\FinInvestimentoResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListFinInvestimentos extends ListRecords
@@ -13,7 +13,7 @@ class ListFinInvestimentos extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            FormLancarInvestimento::render(),
         ];
     }
 }

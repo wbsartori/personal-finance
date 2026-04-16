@@ -16,6 +16,14 @@ Enum TipoInvestimento: string
     /**
      * @return Application|array|string|Translator|\Illuminate\Contracts\Foundation\Application|null
      */
+    public static function toOptions(): array
+    {
+        return array_reduce(self::cases(), function ($options, $item) {
+            $options[$item->value] = $item->toName();
+            return $options;
+        }, []);
+    }
+
     public function toName(): Application|array|string|Translator|\Illuminate\Contracts\Foundation\Application|null
     {
         return match ($this) {
