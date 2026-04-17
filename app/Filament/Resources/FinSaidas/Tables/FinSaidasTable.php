@@ -13,6 +13,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 
@@ -24,7 +25,7 @@ class FinSaidasTable
             ->columns([
                 TextColumn::make('users.name')
                     ->sortable(),
-                TextColumn::make('descricao')
+                TextInputColumn::make('descricao')
                     ->label('Descrição')
                     ->searchable(),
                 TextColumn::make('status')
@@ -45,7 +46,11 @@ class FinSaidasTable
                         StatusPagamento::PAGAMENTO_CONCLUIDO->value => 'success',
                     })
                     ->searchable(),
-                TextColumn::make('valor')->numeric()->money('BRL' )->sortable(),
+                TextInputColumn::make('valor')
+                    ->prefix('R$ ')
+                    ->sortable()
+                    ->type('number')
+                    ->inputMode('decimal'),
                 TextColumn::make('tipo_lancamento')
                     ->formatStateUsing(fn ($state) => match ($state) {
                         TipoLancamento::AVISTA->value => TipoLancamento::AVISTA->toName(),
