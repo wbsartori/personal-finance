@@ -14,12 +14,17 @@ class History extends Model
         'user_id',
         'fin_entrada_id',
         'fin_saida_id',
-        'fin_receita_id',
-        'people_id',
-        'description',
+        'fin_investimento_id',
+        'user_id',
         'type',
-        'value',
-        'output_date',
+        'descricao',
+        'valor',
+        'forma_pagamento',
+        'tipo_lancamento',
+        'numero_parcela',
+        'data_vencimento',
+        'data_pagamento',
+        'status',
     ];
 
     public function user(): BelongsTo

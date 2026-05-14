@@ -80,4 +80,19 @@ class User extends Authenticatable
     public function finCartaos() {
         return $this->hasMany(FinCartao::class);
     }
+
+    public function historicoEntrada()
+    {
+        return $this->hasMany(HistoricoEntrada::class);
+    }
+
+    public function historicoSaida()
+    {
+        return $this->hasMany(HistoricoSaida::class);
+    }
+
+    public function historicoInvestimento()
+    {
+        return $this->hasMany(HistoricoInvestimento::class);
+    }
 }
