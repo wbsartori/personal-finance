@@ -17,3 +17,14 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+composer.lock
+public/js/filament
+.local
+.config
+.cache
+
+.bash_history
+package-lock.json
+
+database/pgadmin_data
+database/postgres_data

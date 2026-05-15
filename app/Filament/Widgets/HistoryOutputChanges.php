@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\HistoricoEntrada;
 use App\Models\History;
 use Carbon\Carbon;
 use Filament\Tables;
@@ -24,33 +25,32 @@ class HistoryOutputChanges extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(History::query()
-                ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('output_date', '=', $month))
-                ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('output_date', '=', $year))
+            ->query(HistoricoEntrada::query()
+                ->when($this->filterDate()['month'] ?? null, fn ($query, $month) => $query->whereMonth('historico_entradas.data_pagamento', '=', $month))
+                ->when($this->filterDate()['year'] ?? null, fn ($query, $year) => $query->whereYear('historico_entradas.data_pagamento', '=', $year))
             )
             ->heading('Histórico de alterações')
             ->defaultPaginationPageOption(5)
             ->defaultSort('created_at', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('output_date')
+                Tables\Columns\TextColumn::make('data_pagamento')
                     ->label('Data da alteração')
                     ->date('d-m-Y', 'America/Sao_Paulo')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('people.full_name')
+                Tables\Columns\TextColumn::make('user.name')
                     ->label('Quem pagou?')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
+                Tables\Columns\TextColumn::make('descricao')
                     ->sortable()
                     ->label('O que pagou?')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
+                Tables\Columns\TextColumn::make('descricao')
                     ->sortable()
                     ->label('O que pagou?')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('value')
-                    ->currency()
+                Tables\Columns\TextColumn::make('valor')
                     ->money('BRL', 0, 'pt_BR')
                     ->sortable()
                     ->label('Novo valor'),

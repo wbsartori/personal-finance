@@ -3,13 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -52,8 +53,46 @@ class User extends Authenticatable implements FilamentUser
         return true;
     }
 
-    public function histories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function histories(): HasMany
     {
         return $this->hasMany(History::class);
+    }
+
+    public function finReceitas(): HasMany {
+        return $this->hasMany(FinReceita::class);
+    }
+
+    public function finEntradas()
+    {
+        return $this->hasMany(FinEntrada::class);
+    }
+
+    public function  finSaidas()
+    {
+        return $this->hasMany(FinSaida::class);
+    }
+
+    public function finInvestimentos()
+    {
+        return $this->hasMany(FinInvestimento::class);
+    }
+
+    public function finCartaos() {
+        return $this->hasMany(FinCartao::class);
+    }
+
+    public function historicoEntrada()
+    {
+        return $this->hasMany(HistoricoEntrada::class);
+    }
+
+    public function historicoSaida()
+    {
+        return $this->hasMany(HistoricoSaida::class);
+    }
+
+    public function historicoInvestimento()
+    {
+        return $this->hasMany(HistoricoInvestimento::class);
     }
 }
