@@ -6,13 +6,16 @@ use App\Enums\StatusPagamento;
 use App\Enums\TipoLancamento;
 use App\Filament\Resources\FinEntradas\Actions\Entrada\Acoes\AcaoConcluirEntrada;
 use App\Filament\Resources\FinEntradas\Actions\Entrada\Acoes\AcaoReverterEntrada;
+use App\Importer\AcaoImportar;
 use App\Models\FinEntrada;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -21,6 +24,21 @@ class FinEntradasTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->headerActions([
+                    Action::make('importar-entrada')
+                        ->schema([
+                            Section::make()->schema([
+                                FileUpload::make('file')
+                                    ->preserveFilenames()
+                                    ->preventFilePathTampering()
+                                    ->disk('local')
+                                    ->directory('temp-ofx'),
+                            ])
+                        ])->action(function (array $data) {
+                            (new AcaoImportar())->importar($data);
+                        })
+                ]
+            )
             ->columns([
                 TextColumn::make('users.name')
                     ->sortable(),
@@ -45,7 +63,10 @@ class FinEntradasTable
                         StatusPagamento::PAGAMENTO_CONCLUIDO->value => 'success',
                     })
                     ->searchable(),
-                TextColumn::make('valor')->numeric()->money('BRL' )->sortable(),
+                TextColumn::make('valor')
+                    ->formatStateUsing(function ($state) {
+                        return 'R$ ' . number_format($state / 100, 2, ',', '.');
+                    }),
                 TextColumn::make('tipo_lancamento')
                     ->formatStateUsing(fn ($state) => match ($state) {
                         TipoLancamento::AVISTA->value => TipoLancamento::AVISTA->toName(),

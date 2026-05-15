@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('users_id');
             $table->string('descricao')->nullable();
             $table->bigInteger('valor')->default(0);
-            $table->string('forma_pagamento')->default('DEB'); //Classe Enum FormaPagamento
-            $table->string('tipo_lancamento')->default('A')->nullable(); // Classe Enum TipoLancamento
+            $table->string('forma_pagamento')->default(\App\Enums\FormaPagamento::CARTAO_CREDITO->value); //Classe Enum FormaPagamento
+            $table->string('tipo_lancamento')->default(\App\Enums\TipoLancamento::AVISTA->value)->nullable(); // Classe Enum TipoLancamento
             $table->integer('numero_parcela')->default(0)->nullable();
             $table->date('data_vencimento');
             $table->date('data_pagamento')->nullable();

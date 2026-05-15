@@ -24,10 +24,9 @@ class FinEntradaForm
                     TextInput::make('descricao'),
                     TextInput::make('valor')
                         ->required()
-                        ->mask(RawJs::make(<<<'JS'
-                            $money($input, ',', '.', 2)
-                            JS)
-                        )
+                        ->formatStateUsing(function ($state) {
+                            return number_format($state / 100, 2, ',', '.');
+                        })
                         ->default(0),
                     Radio::make('forma_pagamento')
                         ->inline()

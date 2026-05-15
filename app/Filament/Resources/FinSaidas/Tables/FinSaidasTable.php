@@ -6,14 +6,16 @@ use App\Enums\StatusPagamento;
 use App\Enums\TipoLancamento;
 use App\Filament\Resources\FinSaidas\Actions\Saida\Acoes\AcaoConcluirSaida;
 use App\Filament\Resources\FinSaidas\Actions\Saida\Acoes\AcaoReverterSaida;
+use App\Importer\AcaoImportar;
 use App\Models\FinSaida;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 
@@ -22,10 +24,25 @@ class FinSaidasTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->headerActions([
+                    Action::make('importar-entrada')
+                        ->schema([
+                            Section::make()->schema([
+                                FileUpload::make('file')
+                                    ->preserveFilenames()
+                                    ->preventFilePathTampering()
+                                    ->disk('local')
+                                    ->directory('temp-ofx'),
+                            ])
+                        ])->action(function (array $data) {
+                            (new AcaoImportar())->importar($data);
+                        })
+                ]
+            )
             ->columns([
                 TextColumn::make('users.name')
                     ->sortable(),
-                TextInputColumn::make('descricao')
+                TextColumn::make('descricao')
                     ->label('Descrição')
                     ->searchable(),
                 TextColumn::make('status')
@@ -46,11 +63,11 @@ class FinSaidasTable
                         StatusPagamento::PAGAMENTO_CONCLUIDO->value => 'success',
                     })
                     ->searchable(),
-                TextInputColumn::make('valor')
-                    ->prefix('R$ ')
-                    ->sortable()
-                    ->type('number')
-                    ->inputMode('decimal'),
+                TextColumn::make('valor')
+                    ->formatStateUsing(function ($state) {
+                        return number_format($state / 100, 2, ',', '.');
+                    })
+                    ->prefix('R$ '),
                 TextColumn::make('tipo_lancamento')
                     ->formatStateUsing(fn ($state) => match ($state) {
                         TipoLancamento::AVISTA->value => TipoLancamento::AVISTA->toName(),
